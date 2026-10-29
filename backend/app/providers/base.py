@@ -29,14 +29,15 @@ async def with_retry(fn: Callable[[], Awaitable[T]], attempts: int = 3, base_del
         except ProviderError as e:
             last = e
             if not e.retryable:
-                break
+                raise  # 不可重试的错误原样抛出（保留状态码，供上层决定如何降级）
         except Exception as e:  # 网络错误等
             last = e
         if i < attempts - 1:
             delay = base_delay * (2 ** i) + random.random() * 0.3
             log.warning("%s 失败（第 %d 次），%.1f 秒后重试：%s", what, i + 1, delay, last)
             await asyncio.sleep(delay)
-    raise ProviderError(f"{what} 最终失败：{last}", retryable=False) from last
+    raise ProviderError(f"{what} 最终失败：{last}", retryable=False,
+                        status=last.status if isinstance(last, ProviderError) else None) from last
 
 
 class Usage:

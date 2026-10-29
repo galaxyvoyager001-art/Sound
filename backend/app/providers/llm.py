@@ -76,7 +76,8 @@ class DashScopeLLM:
     async def _post(self, body: dict) -> dict:
         async with httpx.AsyncClient(timeout=self.timeout) as client:
             r = await client.post(f"{self.base_url}/chat/completions", json=body,
-                                  headers={"Authorization": f"Bearer {self.api_key}"})
+                                  headers={"Authorization": f"Bearer {self.api_key}",
+                                           "X-DashScope-DataInspection": "disable"})
         if r.status_code >= 400:
             raise ProviderError(f"LLM HTTP {r.status_code}: {r.text[:300]}",
                                 retryable=r.status_code in (429, 500, 502, 503, 504), status=r.status_code)

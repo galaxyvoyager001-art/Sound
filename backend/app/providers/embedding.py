@@ -70,7 +70,8 @@ class DashScopeEmbedder(Embedder):
                     r = await c.post(f"{self.base_url}/embeddings",
                                      json={"model": self.model, "input": batch, "dimensions": self.dim,
                                            "encoding_format": "float"},
-                                     headers={"Authorization": f"Bearer {self.api_key}"})
+                                     headers={"Authorization": f"Bearer {self.api_key}",
+                                              "X-DashScope-DataInspection": "disable"})
                 if r.status_code >= 400:
                     raise ProviderError(f"Embedding HTTP {r.status_code}: {r.text[:200]}",
                                         retryable=r.status_code >= 429, status=r.status_code)

@@ -47,6 +47,7 @@ class Pending:
     question: str
     at: float
     raw_text: str
+    kind: str = "edit"  # edit | end（问老人要不要今天先聊到这儿）
 
 
 @dataclass
@@ -391,12 +392,17 @@ class SessionRuntime:
             if self.st.pending:
                 p = self.st.pending
                 self.st.pending = None
+                if analysis.confirmation == "yes" and p.kind == "end":
+                    self.log("confirm", {"answer": "yes", "question": p.question, "kind": "end"})
+                    await self.begin_closing("tired")
+                    return
                 if analysis.confirmation == "yes":
                     await self.run_commands(p.commands, p.raw_text, actions, confirmed=True)
                     self.log("confirm", {"answer": "yes", "question": p.question})
                 elif analysis.confirmation == "no":
-                    self.log("confirm", {"answer": "no", "question": p.question})
-                    actions.append("老人说不是这样，没有修改；可以请老人说说应该是什么样")
+                    self.log("confirm", {"answer": "no", "question": p.question, "kind": p.kind})
+                    actions.append("老人还想接着聊，那就慢慢接着聊" if p.kind == "end" else
+                                   "老人说不是这样，没有修改；可以请老人说说应该是什么样")
                 else:
                     self.log("confirm", {"answer": "none", "question": p.question})
             elif ck == "undo" and self.condition == "personal":
@@ -404,9 +410,15 @@ class SessionRuntime:
                 self.log("undo", {"ok": bool(new), "version": new.version if new else None})
                 actions.append("把刚才的修改改回去了" if new else "没有可以改回去的修改")
             # ---- 疲惫 ----
-            if list(self.st.emotions).count("tired") >= 2 and not self.st.tired_offer_made:
+            recent = list(self.st.emotions)[-3:]
+            if recent.count("tired") >= 2 and not self.st.tired_offer_made and not self.st.pending:
                 self.st.tired_offer_made = True
-                actions.append("老人看起来有点累了：温和地问老人要不要今天先聊到这儿")
+                q = "您是不是有点累了？要不我们今天就先聊到这儿？"
+                self.st.pending = Pending([], q, self.now(), text, kind="end")
+                self.log("tired_offer", {"emotions": recent})
+                confirm_q = q
+            elif sum(1 for e in recent if e in ("sad", "anxious")) >= 2:
+                actions.append("老人有些难过：先温和地安慰一句，然后轻轻换一个轻松愉快的话题（比如小时候好玩的事、好吃的东西），不要追问")
             # ---- 导航 ----
             if "navigate" in analysis.labels and analysis.navigate:
                 desc = await self.navigate(analysis.navigate, text)
@@ -415,9 +427,9 @@ class SessionRuntime:
             # ---- 修改 / 讲述抽取 ----
             if self.condition == "personal" and ck not in ("undo",) and analysis.confirmation == "none":
                 if self.st.phase == "gathering":
-                    confirm_q = await self.narration(text, actions)
+                    confirm_q = await self.narration(text, actions) or confirm_q
                 elif "edit" in analysis.labels:
-                    confirm_q = await self.edit(text, actions)
+                    confirm_q = await self.edit(text, actions) or confirm_q
             elif "edit" in analysis.labels:
                 self.log("edit_ignored", {"reason": f"条件 {self.condition} 不做修改", "text": text})
             # ---- 故事 ----

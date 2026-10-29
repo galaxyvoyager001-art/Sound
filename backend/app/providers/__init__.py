@@ -45,7 +45,8 @@ def build_providers(s: Settings, mock_llm_handler=None) -> Providers:
     cloud = s.use_cloud
     if cloud:
         llm: LLM = DashScopeLLM(s.dashscope_api_key, s.compatible_base, s.llm_model)
-        asr_factory = lambda: DashScopeASRSession(s.dashscope_api_key, s.ws_inference, s.asr_model)  # noqa: E731
+        asr_factory = lambda: DashScopeASRSession(s.dashscope_api_key, s.ws_inference, s.asr_model,
+                                                    vocabulary_id=s.asr_vocabulary_id)  # noqa: E731
         tts: TTS = CosyVoiceTTS(s.dashscope_api_key, s.ws_inference, s.tts_model, s.tts_voice, s.tts_rate,
                                 s.data_dir / "cache" / "tts")
         image: ImageProvider = WanxImage(s.dashscope_api_key, s.api_base, s.image_model)
