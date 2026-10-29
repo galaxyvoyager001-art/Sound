@@ -27,7 +27,7 @@ def _env_bool(name: str, default: bool = False) -> bool:
 class Settings:
     root: Path = ROOT
     data_dir: Path = field(default_factory=lambda: Path(_env("DATA_DIR", str(ROOT / "data"))))
-    assets_dir: Path = ROOT / "assets"
+    assets_dir: Path = field(default_factory=lambda: Path(_env("ASSETS_DIR", str(ROOT / "assets"))))
     config_dir: Path = ROOT / "config"
     frontend_dist: Path = ROOT / "frontend" / "dist"
 
@@ -99,3 +99,24 @@ def get_settings() -> Settings:
 
 def reset_settings_cache() -> None:
     get_settings.cache_clear()
+
+
+def to_rel(path: Path) -> str:
+    """绝对路径 → 清单里保存的相对路径：素材目录下为 assets/…，数据目录下为 data/…。"""
+    s = get_settings()
+    p = Path(path).resolve()
+    for prefix, base in (("assets", s.assets_dir), ("data", s.data_dir)):
+        try:
+            return f"{prefix}/" + p.relative_to(Path(base).resolve()).as_posix()
+        except ValueError:
+            continue
+    return p.relative_to(s.root.resolve()).as_posix()
+
+
+def to_abs(rel: str) -> Path:
+    s = get_settings()
+    if rel.startswith("assets/"):
+        return Path(s.assets_dir) / rel[len("assets/"):]
+    if rel.startswith("data/"):
+        return Path(s.data_dir) / rel[len("data/"):]
+    return s.root / rel

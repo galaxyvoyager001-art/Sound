@@ -144,10 +144,11 @@ class AssetRegistry:
                 tmp = path.with_suffix(".tmp")
                 tmp.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
                 tmp.replace(path)
-            write_references_md(self.root / "assets" / "REFERENCES.md", self.shared.values())
+            write_references_md(self.shared_path.parent / "REFERENCES.md", self.shared.values())
 
     def path(self, rec: AssetRecord, variant: int = 0) -> Path:
-        return self.root / rec.files[variant % len(rec.files)]
+        from ..config import to_abs
+        return to_abs(rec.files[variant % len(rec.files)])
 
 
 KIND_ZH = {"panorama": "全景图", "depth": "深度图", "object_image": "物件插画", "model3d": "3D 模型",

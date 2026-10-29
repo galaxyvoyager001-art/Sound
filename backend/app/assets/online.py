@@ -22,6 +22,7 @@ from typing import Optional
 
 import httpx
 
+from ..config import to_rel
 from .catalog import Catalog, SoundVocab
 from .registry import AssetRecord, AssetRegistry, AssetSource, SoundProps
 
@@ -242,7 +243,8 @@ class SoundFetcher:
         if freesound_key:
             self.sources.insert(0, FreesoundSource(freesound_key))
         self.sfx = sfx
-        self.lib_dir = root / "assets" / "sounds" / "library"
+        from ..config import get_settings
+        self.lib_dir = get_settings().assets_dir / "sounds" / "library"
         self.lib_dir.mkdir(parents=True, exist_ok=True)
 
     def known_urls(self) -> set[str]:
@@ -298,7 +300,7 @@ class SoundFetcher:
         attribution = f"“{cand.title}” by {cand.author}, {cand.license}, via {cand.site}"
         rec = AssetRecord(
             id=aid, kind="music" if vocab.music else "sound", name_zh=vocab.key,
-            tags=[vocab.key] + vocab.zh, synonyms=vocab.en, files=[dst.relative_to(self.root).as_posix()],
+            tags=[vocab.key] + vocab.zh, synonyms=vocab.en, files=[to_rel(dst)],
             source=AssetSource(type="web", url=cand.page_url, download_url=cand.download_url, site=cand.site,
                                author=cand.author, original_title=cand.title,
                                notes=f"检索词：{cand.query}；原始描述：{cand.description[:200]}"),
@@ -343,7 +345,7 @@ class SoundFetcher:
             raw.write_bytes(data)
             transcode(raw, dst, not vocab.ambience, -26.0 if vocab.ambience else -20.0, 60.0)
         rec = AssetRecord(id=f"snd_{slug(vocab.key)}_gen_{digest}", kind="sound", name_zh=vocab.key,
-                          tags=[vocab.key] + vocab.zh, synonyms=vocab.en, files=[dst.relative_to(self.root).as_posix()],
+                          tags=[vocab.key] + vocab.zh, synonyms=vocab.en, files=[to_rel(dst)],
                           source=AssetSource(type="ai", service=f"{self.sfx.name} 文生音效", prompt=prompt),
                           license="AI 生成（服务条款允许使用）", review_status="pending",
                           sound=vocab_props(vocab, ffprobe_duration(dst)))

@@ -91,4 +91,4 @@ def test_registry_requires_license(tmp_path):
     with pytest.raises(ValueError):
         reg.register(bad)
     reg.register(rec(3, "x"))
-    assert (tmp_path / "assets" / "REFERENCES.md").exists()
+    assert (tmp_path / "REFERENCES.md").exists()

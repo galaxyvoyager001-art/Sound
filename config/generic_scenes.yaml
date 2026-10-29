@@ -1,0 +1,88 @@
+# “通用场景”条件（generic）和“只听”条件（audio_only）使用的地域模板。
+# 不根据老人的讲述个人化；第一次使用某个地域时生成全景并缓存，之后所有参与者共用。
+# direction: front/back/left/right/front_left/front_right/back_left/back_right；distance: near/mid/far
+
+上海弄堂:
+  era: 1960年代
+  viewpoints:
+    - name: 家门口
+      description: 石库门门口，乌漆木门，门前青石台阶，两侧是相邻人家的门和窗
+      landmarks: [{name: 弄堂口, direction: front, distance: far}, {name: 隔壁窗下, direction: right, distance: near}, {name: 灶披间, direction: back_left, distance: near}]
+      objects:
+        - {type: 馄饨担子, landmark: 弄堂口}
+        - {type: 自行车, landmark: 隔壁窗下, relation: beside}
+        - {type: 收音机, landmark: 隔壁窗下}
+        - {type: 煤球炉, landmark: 灶披间}
+        - {type: 晾衣竿, landmark: 正前方}
+    - name: 弄堂口
+      description: 弄堂口的过街楼，外面是马路，有公用电话和小店
+      landmarks: [{name: 马路, direction: front, distance: far}, {name: 小店, direction: left, distance: mid}]
+      objects:
+        - {type: 三轮车, landmark: 马路}
+        - {type: 公用电话, landmark: 小店}
+北京胡同:
+  era: 1960年代
+  viewpoints:
+    - name: 院门口
+      description: 四合院的院门，门墩，灰砖院墙，门口一棵老槐树
+      landmarks: [{name: 胡同口, direction: front, distance: far}, {name: 槐树下, direction: right, distance: near}]
+      objects:
+        - {type: 槐树, landmark: 槐树下}
+        - {type: 自行车, landmark: 槐树下, relation: beside}
+        - {type: 磨刀人, landmark: 胡同口}
+        - {type: 有线广播喇叭, landmark: 胡同口, relation: left}
+    - name: 院子里
+      description: 四合院的院子，青砖地，屋檐下挂着鸟笼，有水缸
+      landmarks: [{name: 北屋, direction: front, distance: mid}]
+      objects:
+        - {type: 挂钟, landmark: 北屋}
+        - {type: 八仙桌, landmark: 北屋, relation: nearer}
+江南水乡:
+  era: 1960年代
+  viewpoints:
+    - name: 家门口
+      description: 白墙黛瓦的临河人家，门前石板路，旁边是河埠头
+      landmarks: [{name: 河埠头, direction: right, distance: mid}, {name: 石桥, direction: front, distance: far}]
+      objects:
+        - {type: 乌篷船, landmark: 河埠头}
+        - {type: 搓衣板, landmark: 河埠头, relation: nearer}
+        - {type: 柳树, landmark: 石桥, relation: left}
+        - {type: 竹椅, landmark: 正前方, relation: nearer}
+北方村庄:
+  era: 1960年代
+  viewpoints:
+    - name: 院子里
+      description: 土坯房的院子，黄土院墙，院里有压水井和柴火垛，屋檐下挂着玉米
+      landmarks: [{name: 院门, direction: front, distance: mid}, {name: 鸡窝, direction: left, distance: near}, {name: 灶房, direction: right, distance: near}]
+      objects:
+        - {type: 压水井, landmark: 正前方, relation: nearer}
+        - {type: 鸡笼, landmark: 鸡窝}
+        - {type: 狗, landmark: 院门}
+        - {type: 风箱, landmark: 灶房}
+    - name: 村口
+      description: 村口的大槐树和土路，远处是田野和杨树
+      landmarks: [{name: 田野, direction: front, distance: far}]
+      objects:
+        - {type: 槐树, landmark: 正前方}
+        - {type: 三轮车, landmark: 田野, relation: nearer}
+厂区大院:
+  era: 1970年代
+  viewpoints:
+    - name: 楼门口
+      description: 红砖筒子楼的楼门口，楼前空地晾着被子，远处厂房烟囱
+      landmarks: [{name: 厂房, direction: front, distance: far}, {name: 水房, direction: left, distance: mid}, {name: 空地, direction: right, distance: mid}]
+      objects:
+        - {type: 工厂, landmark: 厂房}
+        - {type: 有线广播喇叭, landmark: 空地}
+        - {type: 自行车, landmark: 正前方, relation: nearer}
+        - {type: 孩子们, landmark: 空地, relation: farther}
+        - {type: 搪瓷脸盆, landmark: 水房}
+其他:
+  era: 1960年代
+  viewpoints:
+    - name: 家门口
+      description: 老街上的青砖瓦房，木门，石板路
+      landmarks: [{name: 街口, direction: front, distance: far}]
+      objects:
+        - {type: 自行车, landmark: 正前方}
+        - {type: 卖冰棍的, landmark: 街口}

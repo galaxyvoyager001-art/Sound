@@ -14,7 +14,7 @@ from pypinyin import lazy_pinyin
 
 from ..assets.catalog import Catalog
 from ..assets.registry import AssetRecord, AssetRegistry, AssetSource
-from ..config import Settings
+from ..config import Settings, to_rel
 from ..providers import Providers
 from ..providers.depth import DepthMapSampler, encode_depth_png
 from ..providers.image import ProceduralPanorama
@@ -51,7 +51,7 @@ class GenerationService:
         self._obj_locks: dict[str, asyncio.Lock] = {}
 
     def rel(self, path: Path) -> str:
-        return path.resolve().relative_to(self.s.root.resolve()).as_posix()
+        return to_rel(path)
 
     # ---------------- 全景 ----------------
     async def generate_panorama(self, m: SceneManifest, vp: Viewpoint, mode: str = "new",
@@ -76,7 +76,7 @@ class GenerationService:
         use_provider_depth = provider_depth if depth_kind == "provider" or self.p.depth.name == "geometric" else None
         depth = await loop.run_in_executor(None, self.p.depth.estimate, img, use_provider_depth)
 
-        base = (self.s.root / "assets" / "images" / "panoramas") if shared else (self.s.data_dir / "scenes" / m.scene_id)
+        base = (self.s.assets_dir / "images" / "panoramas") if shared else (self.s.data_dir / "scenes" / m.scene_id)
         base.mkdir(parents=True, exist_ok=True)
         stamp = time.strftime("%Y%m%d%H%M%S")
         name = f"{slug(m.region_style)}_{slug(vp.name_zh)}_{stamp}"
@@ -102,7 +102,7 @@ class GenerationService:
         return PanoramaResult(self.rel(pano_path), self.rel(depth_path), asset_id, prompt, placeholder)
 
     def audio_only_background(self) -> tuple[str, str]:
-        base = self.s.root / "assets" / "images" / "panoramas"
+        base = self.s.assets_dir / "images" / "panoramas"
         base.mkdir(parents=True, exist_ok=True)
         p = base / "audio_only_warm_blur.jpg"
         d = base / "audio_only_warm_blur_depth.png"
@@ -142,7 +142,7 @@ class GenerationService:
                 return None
             loop = asyncio.get_running_loop()
             img: Image.Image = await loop.run_in_executor(None, matte_object, raw)
-            base = self.s.root / "assets" / "images" / "objects"
+            base = self.s.assets_dir / "images" / "objects"
             base.mkdir(parents=True, exist_ok=True)
             h = hashlib.sha1(prompt.encode()).hexdigest()[:6]
             path = base / f"{slug(canon)}_{h}.png"
@@ -169,7 +169,7 @@ class GenerationService:
         except Exception as e:
             log.warning("3D 生成失败：%s", e)
             return None
-        base = self.s.root / "assets" / "models3d"
+        base = self.s.assets_dir / "models3d"
         base.mkdir(parents=True, exist_ok=True)
         path = base / f"{image_rec.id}.glb"
         path.write_bytes(glb)
