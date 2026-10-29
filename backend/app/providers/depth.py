@@ -76,23 +76,29 @@ def align_disparity_map(disp: np.ndarray) -> np.ndarray:
 
 
 def _align(disp: np.ndarray, pitch_rows: np.ndarray) -> np.ndarray:
-    """用俯角 -35°~-70° 的行（几乎一定是地面）拟合 disp ≈ a·(1/d_ground) + b。"""
-    mask_rows = (pitch_rows < -35) & (pitch_rows > -70)
-    if mask_rows.sum() < 2:
+    """相对视差 → 米制深度。
+
+    用俯角 -6°~-70° 的行（大部分是地面）建立“视差 → 逆深度”的单调分段线性映射：
+    每行取视差中位数，与该行的地面逆深度 tan(φ)/1.6 配对。比这些行更远的像素（视差更小，
+    如远处房屋、天空）在逆深度上线性外推到 0（视差最小处 = 无穷远）。"""
+    rows = np.where((pitch_rows < -6) & (pitch_rows > -70))[0]
+    if len(rows) < 4:
         return geometric_prior(disp.shape[0], disp.shape[1])
-    inv_ground = np.tan(np.radians(-pitch_rows[mask_rows])) / EYE_HEIGHT_M
-    x = np.repeat(inv_ground[:, None], disp.shape[1], axis=1).ravel()
-    y = disp[mask_rows].ravel()
-    # 稳健拟合：两次最小二乘，第二次去掉残差最大的 20%
-    A = np.stack([x, np.ones_like(x)], 1)
-    coef, *_ = np.linalg.lstsq(A, y, rcond=None)
-    res = np.abs(A @ coef - y)
-    keep = res < np.quantile(res, 0.8)
-    coef, *_ = np.linalg.lstsq(A[keep], y[keep], rcond=None)
-    a, b = float(coef[0]), float(coef[1])
-    if a <= 1e-6:
+    xs = np.median(disp[rows], axis=1)
+    ys = np.tan(np.radians(-pitch_rows[rows])) / EYE_HEIGHT_M
+    order = np.argsort(xs)
+    xs, ys = xs[order], np.maximum.accumulate(ys[order])  # 强制单调
+    if xs[-1] - xs[0] < 1e-6:
         return geometric_prior(disp.shape[0], disp.shape[1])
-    inv = (disp - b) / a
+    inv = np.interp(disp, xs, ys)
+    d_sky = float(np.quantile(disp, 0.01))
+    below = disp < xs[0]
+    if xs[0] - d_sky > 1e-6:
+        inv[below] = ys[0] * np.clip((disp[below] - d_sky) / (xs[0] - d_sky), 0, 1)
+    above = disp > xs[-1]  # 比最近的地面还近：按最后一段斜率外推
+    if above.any() and len(xs) >= 2:
+        slope = (ys[-1] - ys[-2]) / max(1e-6, xs[-1] - xs[-2])
+        inv[above] = ys[-1] + slope * (disp[above] - xs[-1])
     depth = 1.0 / np.maximum(inv, 1.0 / D_MAX)
     return np.clip(depth, D_MIN, D_MAX).astype(np.float32)
 

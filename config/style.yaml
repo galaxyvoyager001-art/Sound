@@ -1,0 +1,87 @@
+# 统一视觉风格：全景图和物件插画都从这里组装提示词。
+# 原则：温暖的老连环画 / 水彩 / 褪色老照片插画风，不要照片级写实；
+# 场景只表现 1950–1980 年代中国的普通生活面貌。
+
+style:
+  base_zh: >-
+    温暖的手绘水彩插画，老连环画与褪色老照片的质感，柔和的笔触和纸张纹理，
+    低饱和度的暖色调（米黄、赭石、青灰、砖红），光线柔和，画面安静祥和，
+    1950至1980年代中国普通人的生活场景
+  base_en: >-
+    warm hand-painted watercolor illustration, vintage Chinese lianhuanhua comic and faded old photograph feel,
+    soft brushwork, paper texture, muted warm palette, gentle light, peaceful everyday life in 1950s-1980s China
+  negative: >-
+    照片级写实, 3D 渲染, 高对比度, 霓虹, 现代建筑, 高楼, 汽车, 手机, 电线杆上的广告, 塑料, 英文字母, 文字, 水印,
+    清晰的人脸, 人物特写, 恐怖, 废墟, 战争, 标语, 口号, 横幅
+  people_policy_zh: >-
+    画面中的人物只能是风格化的通用形象：远景或背影，面部简化不画五官细节，不像任何真实人物
+
+panorama:
+  prefix_zh: >-
+    360度等距柱状投影全景图（equirectangular panorama，2:1），站在人眼高度环顾四周，
+    地平线严格位于画面垂直正中，画面左右两端无缝衔接，上方是天空，下方是地面，
+  suffix_zh: >-
+    画面中央是观看者正前方，画面左右四分之一处分别是观看者的左边和右边，画面两端是身后。
+    地面上不要放可移动的物件（小贩、自行车、家禽、收音机等），只画建筑、地面、树木和远景。
+  negative_extra: "鱼眼畸变, 弯曲的地平线, 画框, 分格, 拼贴, 人物, 小贩, 动物"
+
+object:
+  prefix_zh: "单个物件的插画，完整显示、居中，纯白色背景，没有地面和投影，没有其他物体，"
+  suffix_zh: "侧前方视角，轮廓清晰"
+  negative_extra: "背景场景, 地面, 阴影, 多个物体, 裁切, 边框"
+  person_suffix_zh: "人物为远景背影或侧影，面部不画细节"
+
+# 时代的通用视觉要素
+eras:
+  "1950年代": "建国初期，朴素的蓝灰色衣着，青砖瓦房，木质门窗，煤油灯和刚通电的白炽灯"
+  "1960年代": "蓝灰色中山装和布鞋，搪瓷脸盆，竹编物件，木质电线杆，墙上褪色的石灰"
+  "1970年代": "军绿和蓝色衣着，二八自行车，缝纫机，蜂窝煤炉，有线广播喇叭，暖水瓶"
+  "1980年代": "颜色开始丰富的衣着，黑白电视机天线，录音机，自行车多了起来，新刷的墙面"
+
+# 各地域的视觉要素（会合并进全景提示词）
+regions:
+  上海弄堂:
+    visual_zh: "上海石库门弄堂，青砖与红砖相间的山墙，乌漆木门和石库门门框，弄堂狭长，二楼窗口伸出晾衣竹竿挂着衣服，门口有煤球炉和竹椅，梧桐树影"
+    visual_en: "Shanghai shikumen lane, brick walls, black lacquered wooden doors with stone frames, narrow alley, bamboo laundry poles from windows"
+    default_viewpoints: ["家门口", "弄堂口", "弄堂深处"]
+  北京胡同:
+    visual_zh: "北京胡同，灰砖灰瓦的四合院院墙，朱红或黑色的木门和门墩，槐树，屋檐下挂着鸟笼，胡同口有公用水龙头"
+    visual_en: "Beijing hutong, grey brick courtyard walls, red wooden gates with stone drums, locust trees"
+    default_viewpoints: ["院门口", "胡同口", "院子里"]
+  江南水乡:
+    visual_zh: "江南水乡，白墙黛瓦，石拱桥，河埠头的石阶，乌篷船，临水的木格窗，柳树"
+    visual_en: "Jiangnan water town, whitewashed walls, dark tiles, stone arch bridge, canal steps, wooden boats"
+    default_viewpoints: ["家门口", "河埠头", "石桥上"]
+  北方村庄:
+    visual_zh: "北方农村，土坯房和砖瓦房，院墙用黄土夯成，院子里有压水井和柴火垛，玉米挂在屋檐下，远处是田野和杨树"
+    visual_en: "northern Chinese village, adobe and brick houses, rammed earth walls, hand water pump, haystacks, poplar trees"
+    default_viewpoints: ["院子里", "村口", "井边"]
+  厂区大院:
+    visual_zh: "工厂家属大院，整齐的红砖筒子楼，公共水房，楼前空地上晾着被子，远处有厂房烟囱和水塔，电线杆上挂着广播喇叭"
+    visual_en: "factory workers' residential compound, red brick dormitory blocks, communal washroom, chimneys and water tower"
+    default_viewpoints: ["楼门口", "大院空地", "厂门口"]
+  其他:
+    visual_zh: "中国普通城镇的老街，青砖瓦房，木门窗，石板路"
+    visual_en: "old Chinese town street, brick houses, wooden doors, flagstone road"
+    default_viewpoints: ["家门口", "街口"]
+
+# 时段 / 天气 / 季节（用于全景重绘提示词；轻量变化在前端用后期处理实现）
+time_of_day_zh:
+  清晨: "清晨，天刚亮，薄雾，光线清冷柔和"
+  上午: "上午，阳光明亮温暖"
+  中午: "中午，阳光直射，影子很短"
+  下午: "下午，阳光斜照，暖黄色"
+  傍晚: "傍晚，夕阳，天空橙红，家家户户亮起灯"
+  夜晚: "夜晚，月光和窗口昏黄的灯光"
+weather_zh:
+  晴: "晴天"
+  阴: "阴天，天空灰白"
+  小雨: "下着小雨，地面湿润反光"
+  大雨: "下着大雨，屋檐滴水，地面积水"
+  雪: "下雪，房顶和地面积着白雪"
+  雾: "有雾，远处朦胧"
+season_zh:
+  春: "春天，树木发芽，桃花"
+  夏: "夏天，树叶浓绿"
+  秋: "秋天，落叶金黄"
+  冬: "冬天，树枝光秃"

@@ -1,0 +1,115 @@
+# 物件、声音词表、环境声规则、敏感词。检索时会把这里的同义词并入素材标签。
+
+# ---------- 物件目录 ----------
+# height_m: 真实高度（决定画面上的大小）；elevation_m: 底部离地高度
+# sound: 默认声音的检索词（null = 没有声音）；person: 是否是人物（只用风格化通用形象）
+objects:
+  - {type: 馄饨担子, synonyms: [馄饨摊, 卖馄饨的, 馄饨挑子, 小馄饨], height_m: 1.6, sound: 木梆子 叫卖, prompt: "老式竹木馄饨担子，一头是炉子和锅，一头是放碗的木柜，扁担"}
+  - {type: 卖馄饨的老人, synonyms: [馄饨老头], height_m: 1.65, sound: 木梆子 叫卖, person: true, prompt: "挑着馄饨担子的老人，穿蓝布衣服"}
+  - {type: 自行车, synonyms: [脚踏车, 二八车, 单车, 永久牌, 凤凰牌, 飞鸽], height_m: 1.05, sound: 自行车铃, prompt: "黑色二八式老自行车，车铃，后座"}
+  - {type: 三轮车, synonyms: [黄鱼车, 板车, 人力三轮], height_m: 1.1, sound: 三轮车, prompt: "老式人力平板三轮车"}
+  - {type: 收音机, synonyms: [无线电, 半导体, 话匣子, 电子管收音机], height_m: 0.35, elevation_m: 1.0, sound: 收音机 越剧, prompt: "木壳电子管收音机，布面喇叭，旋钮"}
+  - {type: 有线广播喇叭, synonyms: [大喇叭, 广播, 高音喇叭], height_m: 0.6, elevation_m: 4.5, sound: 广播 喇叭, prompt: "电线杆上的铁皮广播喇叭"}
+  - {type: 留声机, synonyms: [唱机, 话匣子], height_m: 0.6, elevation_m: 0.8, sound: 留声机 老歌, prompt: "老式手摇留声机，铜喇叭"}
+  - {type: 缝纫机, synonyms: [蝴蝶牌缝纫机, 洋机], height_m: 0.8, sound: 缝纫机, prompt: "黑色脚踏缝纫机，金色花纹"}
+  - {type: 算盘, synonyms: [], height_m: 0.1, elevation_m: 0.8, sound: 算盘, prompt: "木框算盘"}
+  - {type: 煤球炉, synonyms: [蜂窝煤炉, 炉子, 煤炉, 煤饼炉], height_m: 0.5, sound: 风箱 炉子, prompt: "铁皮蜂窝煤炉，上面放着铝水壶"}
+  - {type: 风箱, synonyms: [], height_m: 0.6, sound: 风箱, prompt: "木头风箱"}
+  - {type: 水井, synonyms: [井, 井台, 井栏, 老井], height_m: 0.7, sound: 井边打水, prompt: "青石井栏的老水井，木桶和井绳"}
+  - {type: 压水井, synonyms: [手压井], height_m: 1.1, sound: 压水井, prompt: "铁制手压水井"}
+  - {type: 搓衣板, synonyms: [洗衣板], height_m: 0.6, sound: 搓衣板, prompt: "木搓衣板和木盆"}
+  - {type: 搪瓷脸盆, synonyms: [脸盆, 搪瓷盆, 洗脸盆], height_m: 0.15, elevation_m: 0.6, sound: 搪瓷盆, prompt: "印着红双喜的白色搪瓷脸盆，放在木脸盆架上"}
+  - {type: 暖水瓶, synonyms: [热水瓶, 暖壶], height_m: 0.4, prompt: "竹壳暖水瓶"}
+  - {type: 挂钟, synonyms: [钟, 座钟, 摆钟], height_m: 0.7, elevation_m: 1.6, sound: 挂钟 滴答, prompt: "木壳摆钟"}
+  - {type: 鸡笼, synonyms: [鸡窝, 鸡, 母鸡, 公鸡], height_m: 0.8, sound: 鸡叫, prompt: "竹编鸡笼，里面有几只母鸡"}
+  - {type: 鸭子, synonyms: [鸭], height_m: 0.4, sound: 鸭叫, prompt: "几只白鸭子"}
+  - {type: 狗, synonyms: [小狗, 大黄狗, 土狗], height_m: 0.55, sound: 狗叫, prompt: "一只趴着的黄色土狗"}
+  - {type: 猫, synonyms: [小猫, 花猫], height_m: 0.3, sound: 猫叫, prompt: "一只花猫"}
+  - {type: 晾衣竿, synonyms: [晾衣服, 竹竿, 晒衣服], height_m: 2.4, prompt: "竹竿上晾着蓝布衣服和被单"}
+  - {type: 竹椅, synonyms: [藤椅, 躺椅, 小板凳], height_m: 0.8, prompt: "旧竹躺椅"}
+  - {type: 八仙桌, synonyms: [桌子, 方桌], height_m: 0.8, prompt: "木质八仙桌和长凳"}
+  - {type: 乘凉的竹榻, synonyms: [竹榻, 竹床], height_m: 0.5, prompt: "夏夜乘凉用的竹榻"}
+  - {type: 梧桐树, synonyms: [法国梧桐, 树, 大树], height_m: 9.0, sound: 风吹树叶, prompt: "高大的梧桐树"}
+  - {type: 槐树, synonyms: [老槐树], height_m: 9.0, sound: 风吹树叶, prompt: "老槐树"}
+  - {type: 柳树, synonyms: [], height_m: 7.0, prompt: "垂柳"}
+  - {type: 乌篷船, synonyms: [小船, 船], height_m: 1.2, sound: 摇橹 水声, prompt: "乌篷船"}
+  - {type: 公用电话, synonyms: [传呼电话], height_m: 1.4, sound: 电话铃, prompt: "弄堂口的公用电话亭小窗口"}
+  - {type: 爆米花机, synonyms: [爆炒米, 爆米花], height_m: 0.9, sound: 爆米花, prompt: "老式手摇爆米花机和小炭炉"}
+  - {type: 磨刀人, synonyms: [磨剪子戗菜刀, 磨刀的], height_m: 1.65, sound: 磨剪子 叫卖, person: true, prompt: "扛着长凳的磨刀人"}
+  - {type: 卖冰棍的, synonyms: [冰棍, 棒冰, 冰棒箱], height_m: 1.2, sound: 卖冰棍 叫卖, person: true, prompt: "推着白色木头冰棍箱的小贩"}
+  - {type: 邮递员, synonyms: [送信的, 邮差], height_m: 1.7, sound: 自行车铃, person: true, prompt: "骑着绿色自行车的邮递员"}
+  - {type: 孩子们, synonyms: [小孩, 小朋友, 跳房子, 跳皮筋, 滚铁环], height_m: 1.2, sound: 孩子嬉戏, person: true, prompt: "几个在玩耍的孩子（远景）"}
+  - {type: 邻居, synonyms: [隔壁阿姨, 隔壁, 邻居家], height_m: 1.6, sound: 远处人声, person: true, prompt: "坐在门口择菜的邻居（侧影）"}
+  - {type: 黑板报, synonyms: [], height_m: 1.5, prompt: "墙上的黑板报（无文字）"}
+  - {type: 学校, synonyms: [小学, 学堂], height_m: 6.0, sound: 学校铃声, prompt: "远处的小学校门"}
+  - {type: 火车, synonyms: [火车站, 铁路], height_m: 4.0, sound: 火车汽笛, prompt: "远处驶过的蒸汽火车"}
+  - {type: 工厂, synonyms: [厂房, 烟囱, 厂里], height_m: 20.0, sound: 工厂汽笛, prompt: "远处的工厂厂房和烟囱"}
+
+# ---------- 声音词表（检索与在线下载共用） ----------
+# key 是逻辑名称；zh/en 关键词用于在线检索；mode: loop | event
+sounds:
+  - {key: 木梆子, zh: [木梆子, 梆子, 敲梆子, 竹梆], en: [wooden clapper, woodblock knock, temple block], mode: event, interval: [12, 35], gain: -3}
+  - {key: 自行车铃, zh: [自行车铃, 车铃], en: [bicycle bell, bike bell ring], mode: event, interval: [10, 30], gain: -5}
+  - {key: 三轮车, zh: [三轮车, 人力车], en: [tricycle squeak, rickshaw, bicycle chain creak], mode: event, interval: [25, 60], gain: -8}
+  - {key: 叫卖, zh: [叫卖, 吆喝, 小贩叫卖], en: [street vendor calling, hawker shouting, market vendor voice], mode: event, interval: [20, 50], gain: -6}
+  - {key: 缝纫机, zh: [缝纫机], en: [sewing machine treadle, old sewing machine], mode: loop, gain: -10}
+  - {key: 算盘, zh: [算盘], en: [abacus], mode: event, interval: [15, 40], gain: -10}
+  - {key: 搪瓷盆, zh: [搪瓷盆, 脸盆], en: [enamel basin, metal bowl clank, washing basin water], mode: event, interval: [30, 80], gain: -10}
+  - {key: 井边打水, zh: [打水, 井水, 水桶], en: [water well bucket, well pulley rope, bucket water splash], mode: event, interval: [30, 70], gain: -8}
+  - {key: 压水井, zh: [压水井], en: [hand water pump, manual pump squeak], mode: event, interval: [30, 70], gain: -8}
+  - {key: 搓衣板, zh: [搓衣板, 洗衣服], en: [washboard scrubbing, hand washing clothes], mode: event, interval: [20, 50], gain: -10}
+  - {key: 风箱, zh: [风箱, 拉风箱], en: [bellows, hand bellows blowing], mode: loop, gain: -12}
+  - {key: 炉子, zh: [蜂窝煤炉, 炉火], en: [coal stove crackle, fire crackling, kettle boiling], mode: loop, gain: -14}
+  - {key: 挂钟, zh: [挂钟, 钟摆, 滴答], en: [pendulum clock ticking, clock tick, clock chime], mode: loop, gain: -12}
+  - {key: 鸡叫, zh: [鸡叫, 公鸡打鸣, 母鸡], en: [chicken clucking, rooster crow, hens], mode: event, interval: [15, 45], gain: -8}
+  - {key: 鸭叫, zh: [鸭子叫], en: [ducks quacking], mode: event, interval: [20, 50], gain: -9}
+  - {key: 狗叫, zh: [狗叫], en: [dog barking distant, dog bark], mode: event, interval: [30, 90], gain: -10}
+  - {key: 猫叫, zh: [猫叫], en: [cat meow], mode: event, interval: [40, 100], gain: -12}
+  - {key: 蝉鸣, zh: [蝉鸣, 知了], en: [cicadas, cicada summer], mode: loop, gain: -14, ambience: true}
+  - {key: 蟋蟀, zh: [蟋蟀, 虫鸣, 蛐蛐], en: [crickets night, cricket chirping], mode: loop, gain: -14, ambience: true}
+  - {key: 鸟叫, zh: [鸟叫, 麻雀], en: [sparrows chirping, birds morning], mode: loop, gain: -14, ambience: true}
+  - {key: 雨打瓦片, zh: [雨声, 雨打屋檐, 雨打瓦片], en: [rain on roof tiles, rain on roof, rain dripping], mode: loop, gain: -10, ambience: true}
+  - {key: 大雨, zh: [大雨, 暴雨], en: [heavy rain], mode: loop, gain: -10, ambience: true}
+  - {key: 风声, zh: [风声, 北风], en: [wind howling, wind outdoor], mode: loop, gain: -16, ambience: true}
+  - {key: 风吹树叶, zh: [树叶沙沙], en: [wind in trees leaves rustling], mode: loop, gain: -16, ambience: true}
+  - {key: 火车汽笛, zh: [火车汽笛, 火车], en: [steam train whistle, train whistle distant, steam locomotive], mode: event, interval: [60, 180], gain: -10}
+  - {key: 工厂汽笛, zh: [工厂汽笛, 厂里拉笛], en: [factory whistle, factory siren steam whistle], mode: event, interval: [120, 300], gain: -12}
+  - {key: 学校铃声, zh: [上课铃, 学校铃声], en: [school bell ringing, hand bell school], mode: event, interval: [90, 240], gain: -12}
+  - {key: 广播体操, zh: [广播体操, 广播体操口令], en: [radio calisthenics, exercise count], mode: loop, gain: -12}
+  - {key: 广播, zh: [广播, 大喇叭], en: [public address announcement, loudspeaker speech], mode: loop, gain: -12, profile: loudspeaker_horn}
+  - {key: 远处人声, zh: [人声, 邻居说话, 街坊聊天], en: [distant crowd chatter, people talking outdoor, walla], mode: loop, gain: -18, ambience: true}
+  - {key: 孩子嬉戏, zh: [孩子玩耍, 小孩笑声], en: [children playing outdoor, kids playground], mode: loop, gain: -16}
+  - {key: 戏曲, zh: [越剧, 京剧, 沪剧, 戏曲, 评弹], en: [chinese opera, peking opera, yueju], mode: loop, gain: -8, profile: old_radio, music: true}
+  - {key: 收音机调台, zh: [收音机杂音, 调台], en: [radio tuning static, shortwave radio static], mode: event, interval: [40, 120], gain: -14, profile: old_radio}
+  - {key: 老歌, zh: [老歌, 民歌, 茉莉花], en: [chinese folk song, erhu folk melody, jasmine flower song], mode: loop, gain: -8, profile: gramophone, music: true}
+  - {key: 摇橹, zh: [摇橹, 划船, 水声], en: [rowing boat oar, oars water, canal water lapping], mode: loop, gain: -12}
+  - {key: 电话铃, zh: [电话铃], en: [old telephone ring], mode: event, interval: [60, 200], gain: -12}
+  - {key: 爆米花, zh: [爆米花, 爆炒米], en: [popcorn machine bang, loud pop explosion], mode: event, interval: [60, 180], gain: -14}
+  - {key: 磨剪子, zh: [磨剪子戗菜刀], en: [knife sharpening, sharpening stone], mode: event, interval: [30, 80], gain: -10}
+  - {key: 卖冰棍, zh: [卖冰棍, 冰棍叫卖], en: [ice cream vendor bell, hand bell vendor], mode: event, interval: [30, 80], gain: -8}
+
+# ---------- 环境底层自动规则 ----------
+# 每条规则：满足 when 中所有条件时加入 sound（逻辑名称）
+ambience_rules:
+  - {role: base, sound: 远处人声, when: {region: [上海弄堂, 北京胡同, 厂区大院, 其他, 江南水乡]}, gain: -20}
+  - {role: base, sound: 风吹树叶, when: {region: [北方村庄]}, gain: -18}
+  - {role: time, sound: 鸟叫, when: {time: [清晨, 上午], weather: [晴, 阴, 雾]}, gain: -16}
+  - {role: time, sound: 炉子, when: {time: [清晨, 傍晚]}, gain: -20}
+  - {role: time, sound: 蟋蟀, when: {time: [夜晚], season: [夏, 秋], weather: [晴, 阴]}, gain: -14}
+  - {role: season, sound: 蝉鸣, when: {season: [夏], time: [上午, 中午, 下午], weather: [晴]}, gain: -16}
+  - {role: weather, sound: 雨打瓦片, when: {weather: [小雨]}, gain: -10}
+  - {role: weather, sound: 大雨, when: {weather: [大雨]}, gain: -8}
+  - {role: weather, sound: 风声, when: {season: [冬]}, gain: -18}
+  - {role: weather, sound: 风声, when: {weather: [雪, 雾]}, gain: -20}
+
+# ---------- 敏感内容（永远不自动加入场景） ----------
+sensitive_keywords: [防空警报, 空袭, 警报, 批斗, 口号, 标语, 语录, 枪声, 炮声, 爆炸, 军号, 哭声, 哀乐, 葬礼, 丧事, air raid, siren, gunshot, explosion, funeral, struggle session, slogan, propaganda]
+
+# ---------- 控制短语（快速通道，不等 4 秒沉默） ----------
+control_phrases:
+  quiet: [太吵了, 吵死了, 停一下, 停, 安静, 别响了, 关掉, 小声点, 声音太大, 关了吧]
+  resume: [可以了, 继续吧, 再放, 放出来, 声音开开, 打开声音]
+  end: [今天就到这儿, 今天就到这里, 就到这儿吧, 我累了, 不想说了, 结束吧, 下次再说]
+  undo: [不对, 改回去, 还是原来的, 不是这样, 刚才那样好, 弄错了]
+  yes: [对, 对的, 是的, 是, 嗯, 没错, 对对, 就是, 好, 好的, 行]
+  no: [不是, 不对, 不要, 不用, 算了]

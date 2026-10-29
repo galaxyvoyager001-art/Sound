@@ -235,12 +235,11 @@ def paint_placeholder_panorama(seed: int = 0, width: int = 2048, height: int = 1
     y = np.linspace(0, 1, height)[:, None]
     sky_top, sky_hor = np.array([196, 214, 222]), np.array([244, 228, 200])
     ground_hor, ground_bot = np.array([186, 168, 140]), np.array([120, 104, 86])
-    img = np.zeros((height, width, 3), np.float32)
-    up = y < 0.5
-    t = (y / 0.5)
-    img[:] = np.where(up, sky_top * (1 - t) + sky_hor * t, 0)
-    t2 = (y - 0.5) / 0.5
-    img[:] = np.where(~up, ground_hor * (1 - t2) + ground_bot * t2, img)
+    yy = y[:, 0]
+    t = np.clip(yy / 0.5, 0, 1)[:, None]
+    t2 = np.clip((yy - 0.5) / 0.5, 0, 1)[:, None]
+    rows = np.where((yy < 0.5)[:, None], sky_top * (1 - t) + sky_hor * t, ground_hor * (1 - t2) + ground_bot * t2)
+    img = np.repeat(rows[:, None, :], width, axis=1).astype(np.float32)
     pil = Image.fromarray(img.clip(0, 255).astype(np.uint8))
     d = ImageDraw.Draw(pil, "RGBA")
     # 房屋剪影：沿方位角排列，水平方向可循环

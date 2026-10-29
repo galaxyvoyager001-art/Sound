@@ -1,0 +1,29 @@
+html, body { margin: 0; height: 100%; overflow: hidden; background: #ede1cc; cursor: none; }
+#app { position: fixed; inset: 0; }
+#corner { position: fixed; left: 0; top: 0; width: 60px; height: 60px; z-index: 5; }
+#start {
+  position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+  background: #ede1cc; z-index: 10; cursor: pointer; transition: opacity 1.2s;
+  font-family: "PingFang SC", "Noto Serif SC", "Songti SC", "Microsoft YaHei", serif; color: #5b4632;
+}
+#start.hidden { opacity: 0; pointer-events: none; }
+.start-card { text-align: center; }
+.start-title { font-size: 64px; letter-spacing: 0.3em; }
+.start-hint { margin-top: 24px; font-size: 20px; opacity: 0.6; }
+#staff {
+  position: fixed; right: 0; top: 0; bottom: 0; width: 420px; max-width: 100%; z-index: 20;
+  background: rgba(30, 24, 18, 0.92); color: #f2e8d8; padding: 14px; box-sizing: border-box;
+  font: 14px/1.5 "PingFang SC", "Microsoft YaHei", sans-serif; transform: translateX(100%);
+  transition: transform 0.3s; display: flex; flex-direction: column; gap: 8px; cursor: default;
+}
+#staff.open { transform: none; }
+#staff h3 { margin: 0; font-weight: 500; }
+#staff small { opacity: 0.6; font-weight: 400; }
+#staff .row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+#staff input[type="text"], #staff #staff-text { flex: 1; min-width: 0; padding: 6px 8px; border-radius: 6px; border: 1px solid #6b5a46; background: #2b231b; color: #f2e8d8; }
+#staff button, #staff select { padding: 6px 10px; border-radius: 6px; border: 1px solid #8a7356; background: #4a3b2c; color: #f2e8d8; cursor: pointer; }
+#staff-log { flex: 1; overflow-y: auto; font-size: 13px; border-top: 1px solid #5a4a38; padding-top: 6px; }
+#staff-log .elder { color: #ffe0a8; }
+#staff-log .companion { color: #b9d6ff; }
+#staff-log .error { color: #ff9c8a; }
+#staff-status, #staff-level { font-size: 13px; opacity: 0.85; }
