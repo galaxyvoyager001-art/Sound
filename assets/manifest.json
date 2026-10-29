@@ -1,0 +1,1134 @@
+{
+ "generated_at": 1793298791,
+ "count": 20,
+ "assets": [
+  {
+   "id": "snd_synth_abacus_synth",
+   "kind": "sound",
+   "name_zh": "算盘",
+   "tags": [
+    "算盘",
+    "算盘"
+   ],
+   "synonyms": [
+    "abacus"
+   ],
+   "region": [
+    "any"
+   ],
+   "era": [
+    "any"
+   ],
+   "files": [
+    "assets/sounds/library/abacus_synth.mp3"
+   ],
+   "source": {
+    "type": "procedural",
+    "url": null,
+    "download_url": null,
+    "site": null,
+    "author": null,
+    "service": "scripts/synth_sounds.py",
+    "prompt": null,
+    "original_title": null,
+    "notes": "程序合成占位：算盘珠（模态合成）。有真实录音后建议替换。"
+   },
+   "license": "CC0-1.0（本项目自制）",
+   "license_url": null,
+   "attribution": null,
+   "sensitive": false,
+   "copyright_status": "public_domain",
+   "review_status": "pending",
+   "sound": {
+    "mode": "event",
+    "interval_range_s": [
+     15.0,
+     40.0
+    ],
+    "gain_db": -10.0,
+    "acoustic_profile": "clean",
+    "duration_s": 2.53,
+    "loudness_lufs": null,
+    "is_ambience": false
+   },
+   "style_key": null,
+   "participant_id": null,
+   "created_at": 1793298765.814,
+   "notes": ""
+  },
+  {
+   "id": "snd_synth_bellows_synth",
+   "kind": "sound",
+   "name_zh": "风箱",
+   "tags": [
+    "风箱",
+    "风箱",
+    "拉风箱"
+   ],
+   "synonyms": [
+    "bellows",
+    "hand bellows blowing"
+   ],
+   "region": [
+    "any"
+   ],
+   "era": [
+    "any"
+   ],
+   "files": [
+    "assets/sounds/library/bellows_synth.mp3"
+   ],
+   "source": {
+    "type": "procedural",
+    "url": null,
+    "download_url": null,
+    "site": null,
+    "author": null,
+    "service": "scripts/synth_sounds.py",
+    "prompt": null,
+    "original_title": null,
+    "notes": "程序合成占位：拉风箱（调制噪声）。有真实录音后建议替换。"
+   },
+   "license": "CC0-1.0（本项目自制）",
+   "license_url": null,
+   "attribution": null,
+   "sensitive": false,
+   "copyright_status": "public_domain",
+   "review_status": "pending",
+   "sound": {
+    "mode": "loop",
+    "interval_range_s": [
+     10.0,
+     30.0
+    ],
+    "gain_db": -12.0,
+    "acoustic_profile": "clean",
+    "duration_s": 10.03,
+    "loudness_lufs": null,
+    "is_ambience": false
+   },
+   "style_key": null,
+   "participant_id": null,
+   "created_at": 1793298789.634,
+   "notes": ""
+  },
+  {
+   "id": "snd_synth_bikeBell_synth_a",
+   "kind": "sound",
+   "name_zh": "自行车铃",
+   "tags": [
+    "自行车铃",
+    "自行车铃",
+    "车铃"
+   ],
+   "synonyms": [
+    "bicycle bell",
+    "bike bell ring"
+   ],
+   "region": [
+    "any"
+   ],
+   "era": [
+    "any"
+   ],
+   "files": [
+    "assets/sounds/library/bikeBell_synth_a.mp3"
+   ],
+   "source": {
+    "type": "procedural",
+    "url": null,
+    "download_url": null,
+    "site": null,
+    "author": null,
+    "service": "scripts/synth_sounds.py",
+    "prompt": null,
+    "original_title": null,
+    "notes": "程序合成占位：转铃（模态合成）。有真实录音后建议替换。"
+   },
+   "license": "CC0-1.0（本项目自制）",
+   "license_url": null,
+   "attribution": null,
+   "sensitive": false,
+   "copyright_status": "public_domain",
+   "review_status": "pending",
+   "sound": {
+    "mode": "event",
+    "interval_range_s": [
+     10.0,
+     30.0
+    ],
+    "gain_db": -5.0,
+    "acoustic_profile": "clean",
+    "duration_s": 1.65,
+    "loudness_lufs": null,
+    "is_ambience": false
+   },
+   "style_key": null,
+   "participant_id": null,
+   "created_at": 1793298764.32,
+   "notes": ""
+  },
+  {
+   "id": "snd_synth_bikeBell_synth_b",
+   "kind": "sound",
+   "name_zh": "自行车铃",
+   "tags": [
+    "自行车铃",
+    "自行车铃",
+    "车铃"
+   ],
+   "synonyms": [
+    "bicycle bell",
+    "bike bell ring"
+   ],
+   "region": [
+    "any"
+   ],
+   "era": [
+    "any"
+   ],
+   "files": [
+    "assets/sounds/library/bikeBell_synth_b.mp3"
+   ],
+   "source": {
+    "type": "procedural",
+    "url": null,
+    "download_url": null,
+    "site": null,
+    "author": null,
+    "service": "scripts/synth_sounds.py",
+    "prompt": null,
+    "original_title": null,
+    "notes": "程序合成占位：转铃连响（模态合成）。有真实录音后建议替换。"
+   },
+   "license": "CC0-1.0（本项目自制）",
+   "license_url": null,
+   "attribution": null,
+   "sensitive": false,
+   "copyright_status": "public_domain",
+   "review_status": "pending",
+   "sound": {
+    "mode": "event",
+    "interval_range_s": [
+     10.0,
+     30.0
+    ],
+    "gain_db": -5.0,
+    "acoustic_profile": "clean",
+    "duration_s": 1.65,
+    "loudness_lufs": null,
+    "is_ambience": false
+   },
+   "style_key": null,
+   "participant_id": null,
+   "created_at": 1793298764.603,
+   "notes": ""
+  },
+  {
+   "id": "snd_synth_cicadas_synth",
+   "kind": "sound",
+   "name_zh": "蝉鸣",
+   "tags": [
+    "蝉鸣",
+    "蝉鸣",
+    "知了"
+   ],
+   "synonyms": [
+    "cicadas",
+    "cicada summer"
+   ],
+   "region": [
+    "any"
+   ],
+   "era": [
+    "any"
+   ],
+   "files": [
+    "assets/sounds/library/cicadas_synth.mp3"
+   ],
+   "source": {
+    "type": "procedural",
+    "url": null,
+    "download_url": null,
+    "site": null,
+    "author": null,
+    "service": "scripts/synth_sounds.py",
+    "prompt": null,
+    "original_title": null,
+    "notes": "程序合成占位：夏日蝉鸣（调幅噪声）。有真实录音后建议替换。"
+   },
+   "license": "CC0-1.0（本项目自制）",
+   "license_url": null,
+   "attribution": null,
+   "sensitive": false,
+   "copyright_status": "public_domain",
+   "review_status": "pending",
+   "sound": {
+    "mode": "loop",
+    "interval_range_s": [
+     10.0,
+     30.0
+    ],
+    "gain_db": -14.0,
+    "acoustic_profile": "clean",
+    "duration_s": 30.04,
+    "loudness_lufs": null,
+    "is_ambience": true
+   },
+   "style_key": null,
+   "participant_id": null,
+   "created_at": 1793298787.811,
+   "notes": ""
+  },
+  {
+   "id": "snd_synth_clock_synth",
+   "kind": "sound",
+   "name_zh": "挂钟",
+   "tags": [
+    "挂钟",
+    "挂钟",
+    "钟摆",
+    "滴答"
+   ],
+   "synonyms": [
+    "pendulum clock ticking",
+    "clock tick",
+    "clock chime"
+   ],
+   "region": [
+    "any"
+   ],
+   "era": [
+    "any"
+   ],
+   "files": [
+    "assets/sounds/library/clock_synth.mp3"
+   ],
+   "source": {
+    "type": "procedural",
+    "url": null,
+    "download_url": null,
+    "site": null,
+    "author": null,
+    "service": "scripts/synth_sounds.py",
+    "prompt": null,
+    "original_title": null,
+    "notes": "程序合成占位：摆钟滴答（模态合成）。有真实录音后建议替换。"
+   },
+   "license": "CC0-1.0（本项目自制）",
+   "license_url": null,
+   "attribution": null,
+   "sensitive": false,
+   "copyright_status": "public_domain",
+   "review_status": "pending",
+   "sound": {
+    "mode": "loop",
+    "interval_range_s": [
+     10.0,
+     30.0
+    ],
+    "gain_db": -12.0,
+    "acoustic_profile": "clean",
+    "duration_s": 12.04,
+    "loudness_lufs": null,
+    "is_ambience": false
+   },
+   "style_key": null,
+   "participant_id": null,
+   "created_at": 1793298765.578,
+   "notes": ""
+  },
+  {
+   "id": "snd_synth_crickets_synth",
+   "kind": "sound",
+   "name_zh": "蟋蟀",
+   "tags": [
+    "蟋蟀",
+    "蟋蟀",
+    "虫鸣",
+    "蛐蛐"
+   ],
+   "synonyms": [
+    "crickets night",
+    "cricket chirping"
+   ],
+   "region": [
+    "any"
+   ],
+   "era": [
+    "any"
+   ],
+   "files": [
+    "assets/sounds/library/crickets_synth.mp3"
+   ],
+   "source": {
+    "type": "procedural",
+    "url": null,
+    "download_url": null,
+    "site": null,
+    "author": null,
+    "service": "scripts/synth_sounds.py",
+    "prompt": null,
+    "original_title": null,
+    "notes": "程序合成占位：夜晚蟋蟀（调幅正弦）。有真实录音后建议替换。"
+   },
+   "license": "CC0-1.0（本项目自制）",
+   "license_url": null,
+   "attribution": null,
+   "sensitive": false,
+   "copyright_status": "public_domain",
+   "review_status": "pending",
+   "sound": {
+    "mode": "loop",
+    "interval_range_s": [
+     10.0,
+     30.0
+    ],
+    "gain_db": -14.0,
+    "acoustic_profile": "clean",
+    "duration_s": 30.04,
+    "loudness_lufs": null,
+    "is_ambience": true
+   },
+   "style_key": null,
+   "participant_id": null,
+   "created_at": 1793298784.75,
+   "notes": ""
+  },
+  {
+   "id": "snd_synth_enamel_synth",
+   "kind": "sound",
+   "name_zh": "搪瓷盆",
+   "tags": [
+    "搪瓷盆",
+    "搪瓷盆",
+    "脸盆"
+   ],
+   "synonyms": [
+    "enamel basin",
+    "metal bowl clank",
+    "washing basin water"
+   ],
+   "region": [
+    "any"
+   ],
+   "era": [
+    "any"
+   ],
+   "files": [
+    "assets/sounds/library/enamel_synth.mp3"
+   ],
+   "source": {
+    "type": "procedural",
+    "url": null,
+    "download_url": null,
+    "site": null,
+    "author": null,
+    "service": "scripts/synth_sounds.py",
+    "prompt": null,
+    "original_title": null,
+    "notes": "程序合成占位：搪瓷盆碰撞（模态合成）。有真实录音后建议替换。"
+   },
+   "license": "CC0-1.0（本项目自制）",
+   "license_url": null,
+   "attribution": null,
+   "sensitive": false,
+   "copyright_status": "public_domain",
+   "review_status": "pending",
+   "sound": {
+    "mode": "event",
+    "interval_range_s": [
+     30.0,
+     80.0
+    ],
+    "gain_db": -10.0,
+    "acoustic_profile": "clean",
+    "duration_s": 2.04,
+    "loudness_lufs": null,
+    "is_ambience": false
+   },
+   "style_key": null,
+   "participant_id": null,
+   "created_at": 1793298766.058,
+   "notes": ""
+  },
+  {
+   "id": "snd_synth_factoryWhistle_synth",
+   "kind": "sound",
+   "name_zh": "工厂汽笛",
+   "tags": [
+    "工厂汽笛",
+    "工厂汽笛",
+    "厂里拉笛"
+   ],
+   "synonyms": [
+    "factory whistle",
+    "factory siren steam whistle"
+   ],
+   "region": [
+    "any"
+   ],
+   "era": [
+    "any"
+   ],
+   "files": [
+    "assets/sounds/library/factoryWhistle_synth.mp3"
+   ],
+   "source": {
+    "type": "procedural",
+    "url": null,
+    "download_url": null,
+    "site": null,
+    "author": null,
+    "service": "scripts/synth_sounds.py",
+    "prompt": null,
+    "original_title": null,
+    "notes": "程序合成占位：工厂汽笛（和弦 + 气流噪声）。有真实录音后建议替换。"
+   },
+   "license": "CC0-1.0（本项目自制）",
+   "license_url": null,
+   "attribution": null,
+   "sensitive": false,
+   "copyright_status": "public_domain",
+   "review_status": "pending",
+   "sound": {
+    "mode": "event",
+    "interval_range_s": [
+     120.0,
+     300.0
+    ],
+    "gain_db": -12.0,
+    "acoustic_profile": "clean",
+    "duration_s": 6.03,
+    "loudness_lufs": null,
+    "is_ambience": false
+   },
+   "style_key": null,
+   "participant_id": null,
+   "created_at": 1793298789.05,
+   "notes": ""
+  },
+  {
+   "id": "snd_synth_heavyRain_synth",
+   "kind": "sound",
+   "name_zh": "大雨",
+   "tags": [
+    "大雨",
+    "大雨",
+    "暴雨"
+   ],
+   "synonyms": [
+    "heavy rain"
+   ],
+   "region": [
+    "any"
+   ],
+   "era": [
+    "any"
+   ],
+   "files": [
+    "assets/sounds/library/heavyRain_synth.mp3"
+   ],
+   "source": {
+    "type": "procedural",
+    "url": null,
+    "download_url": null,
+    "site": null,
+    "author": null,
+    "service": "scripts/synth_sounds.py",
+    "prompt": null,
+    "original_title": null,
+    "notes": "程序合成占位：大雨（滤波噪声 + 随机雨滴）。有真实录音后建议替换。"
+   },
+   "license": "CC0-1.0（本项目自制）",
+   "license_url": null,
+   "attribution": null,
+   "sensitive": false,
+   "copyright_status": "public_domain",
+   "review_status": "pending",
+   "sound": {
+    "mode": "loop",
+    "interval_range_s": [
+     10.0,
+     30.0
+    ],
+    "gain_db": -10.0,
+    "acoustic_profile": "clean",
+    "duration_s": 30.04,
+    "loudness_lufs": null,
+    "is_ambience": true
+   },
+   "style_key": null,
+   "participant_id": null,
+   "created_at": 1793298773.47,
+   "notes": ""
+  },
+  {
+   "id": "snd_synth_leaves_synth",
+   "kind": "sound",
+   "name_zh": "风吹树叶",
+   "tags": [
+    "风吹树叶",
+    "树叶沙沙"
+   ],
+   "synonyms": [
+    "wind in trees leaves rustling"
+   ],
+   "region": [
+    "any"
+   ],
+   "era": [
+    "any"
+   ],
+   "files": [
+    "assets/sounds/library/leaves_synth.mp3"
+   ],
+   "source": {
+    "type": "procedural",
+    "url": null,
+    "download_url": null,
+    "site": null,
+    "author": null,
+    "service": "scripts/synth_sounds.py",
+    "prompt": null,
+    "original_title": null,
+    "notes": "程序合成占位：风吹树叶（调制滤波噪声）。有真实录音后建议替换。"
+   },
+   "license": "CC0-1.0（本项目自制）",
+   "license_url": null,
+   "attribution": null,
+   "sensitive": false,
+   "copyright_status": "public_domain",
+   "review_status": "pending",
+   "sound": {
+    "mode": "loop",
+    "interval_range_s": [
+     10.0,
+     30.0
+    ],
+    "gain_db": -16.0,
+    "acoustic_profile": "clean",
+    "duration_s": 30.04,
+    "loudness_lufs": null,
+    "is_ambience": true
+   },
+   "style_key": null,
+   "participant_id": null,
+   "created_at": 1793298781.382,
+   "notes": ""
+  },
+  {
+   "id": "snd_synth_muBangzi_synth_a",
+   "kind": "sound",
+   "name_zh": "木梆子",
+   "tags": [
+    "木梆子",
+    "木梆子",
+    "梆子",
+    "敲梆子",
+    "竹梆"
+   ],
+   "synonyms": [
+    "wooden clapper",
+    "woodblock knock",
+    "temple block"
+   ],
+   "region": [
+    "any"
+   ],
+   "era": [
+    "any"
+   ],
+   "files": [
+    "assets/sounds/library/muBangzi_synth_a.mp3"
+   ],
+   "source": {
+    "type": "procedural",
+    "url": null,
+    "download_url": null,
+    "site": null,
+    "author": null,
+    "service": "scripts/synth_sounds.py",
+    "prompt": null,
+    "original_title": null,
+    "notes": "程序合成占位：木梆子三击（模态合成）。有真实录音后建议替换。"
+   },
+   "license": "CC0-1.0（本项目自制）",
+   "license_url": null,
+   "attribution": null,
+   "sensitive": false,
+   "copyright_status": "public_domain",
+   "review_status": "pending",
+   "sound": {
+    "mode": "event",
+    "interval_range_s": [
+     12.0,
+     35.0
+    ],
+    "gain_db": -3.0,
+    "acoustic_profile": "clean",
+    "duration_s": 2.25,
+    "loudness_lufs": null,
+    "is_ambience": false
+   },
+   "style_key": null,
+   "participant_id": null,
+   "created_at": 1793298763.72,
+   "notes": ""
+  },
+  {
+   "id": "snd_synth_muBangzi_synth_b",
+   "kind": "sound",
+   "name_zh": "木梆子",
+   "tags": [
+    "木梆子",
+    "木梆子",
+    "梆子",
+    "敲梆子",
+    "竹梆"
+   ],
+   "synonyms": [
+    "wooden clapper",
+    "woodblock knock",
+    "temple block"
+   ],
+   "region": [
+    "any"
+   ],
+   "era": [
+    "any"
+   ],
+   "files": [
+    "assets/sounds/library/muBangzi_synth_b.mp3"
+   ],
+   "source": {
+    "type": "procedural",
+    "url": null,
+    "download_url": null,
+    "site": null,
+    "author": null,
+    "service": "scripts/synth_sounds.py",
+    "prompt": null,
+    "original_title": null,
+    "notes": "程序合成占位：木梆子四击（模态合成）。有真实录音后建议替换。"
+   },
+   "license": "CC0-1.0（本项目自制）",
+   "license_url": null,
+   "attribution": null,
+   "sensitive": false,
+   "copyright_status": "public_domain",
+   "review_status": "pending",
+   "sound": {
+    "mode": "event",
+    "interval_range_s": [
+     12.0,
+     35.0
+    ],
+    "gain_db": -3.0,
+    "acoustic_profile": "clean",
+    "duration_s": 2.25,
+    "loudness_lufs": null,
+    "is_ambience": false
+   },
+   "style_key": null,
+   "participant_id": null,
+   "created_at": 1793298764.007,
+   "notes": ""
+  },
+  {
+   "id": "snd_synth_radioStatic_synth",
+   "kind": "sound",
+   "name_zh": "收音机调台",
+   "tags": [
+    "收音机调台",
+    "收音机杂音",
+    "调台"
+   ],
+   "synonyms": [
+    "radio tuning static",
+    "shortwave radio static"
+   ],
+   "region": [
+    "any"
+   ],
+   "era": [
+    "any"
+   ],
+   "files": [
+    "assets/sounds/library/radioStatic_synth.mp3"
+   ],
+   "source": {
+    "type": "procedural",
+    "url": null,
+    "download_url": null,
+    "site": null,
+    "author": null,
+    "service": "scripts/synth_sounds.py",
+    "prompt": null,
+    "original_title": null,
+    "notes": "程序合成占位：收音机调台杂音。有真实录音后建议替换。"
+   },
+   "license": "CC0-1.0（本项目自制）",
+   "license_url": null,
+   "attribution": null,
+   "sensitive": false,
+   "copyright_status": "public_domain",
+   "review_status": "pending",
+   "sound": {
+    "mode": "event",
+    "interval_range_s": [
+     40.0,
+     120.0
+    ],
+    "gain_db": -14.0,
+    "acoustic_profile": "old_radio",
+    "duration_s": 6.03,
+    "loudness_lufs": null,
+    "is_ambience": false
+   },
+   "style_key": null,
+   "participant_id": null,
+   "created_at": 1793298788.252,
+   "notes": ""
+  },
+  {
+   "id": "snd_synth_rainTiles_synth",
+   "kind": "sound",
+   "name_zh": "雨打瓦片",
+   "tags": [
+    "雨打瓦片",
+    "雨声",
+    "雨打屋檐",
+    "雨打瓦片"
+   ],
+   "synonyms": [
+    "rain on roof tiles",
+    "rain on roof",
+    "rain dripping"
+   ],
+   "region": [
+    "any"
+   ],
+   "era": [
+    "any"
+   ],
+   "files": [
+    "assets/sounds/library/rainTiles_synth.mp3"
+   ],
+   "source": {
+    "type": "procedural",
+    "url": null,
+    "download_url": null,
+    "site": null,
+    "author": null,
+    "service": "scripts/synth_sounds.py",
+    "prompt": null,
+    "original_title": null,
+    "notes": "程序合成占位：小雨打瓦片（滤波噪声 + 随机雨滴）。有真实录音后建议替换。"
+   },
+   "license": "CC0-1.0（本项目自制）",
+   "license_url": null,
+   "attribution": null,
+   "sensitive": false,
+   "copyright_status": "public_domain",
+   "review_status": "pending",
+   "sound": {
+    "mode": "loop",
+    "interval_range_s": [
+     10.0,
+     30.0
+    ],
+    "gain_db": -10.0,
+    "acoustic_profile": "clean",
+    "duration_s": 30.04,
+    "loudness_lufs": null,
+    "is_ambience": true
+   },
+   "style_key": null,
+   "participant_id": null,
+   "created_at": 1793298769.375,
+   "notes": ""
+  },
+  {
+   "id": "snd_synth_schoolBell_synth",
+   "kind": "sound",
+   "name_zh": "学校铃声",
+   "tags": [
+    "学校铃声",
+    "上课铃",
+    "学校铃声"
+   ],
+   "synonyms": [
+    "school bell ringing",
+    "hand bell school"
+   ],
+   "region": [
+    "any"
+   ],
+   "era": [
+    "any"
+   ],
+   "files": [
+    "assets/sounds/library/schoolBell_synth.mp3"
+   ],
+   "source": {
+    "type": "procedural",
+    "url": null,
+    "download_url": null,
+    "site": null,
+    "author": null,
+    "service": "scripts/synth_sounds.py",
+    "prompt": null,
+    "original_title": null,
+    "notes": "程序合成占位：手摇铃（模态合成）。有真实录音后建议替换。"
+   },
+   "license": "CC0-1.0（本项目自制）",
+   "license_url": null,
+   "attribution": null,
+   "sensitive": false,
+   "copyright_status": "public_domain",
+   "review_status": "pending",
+   "sound": {
+    "mode": "event",
+    "interval_range_s": [
+     90.0,
+     240.0
+    ],
+    "gain_db": -12.0,
+    "acoustic_profile": "clean",
+    "duration_s": 4.05,
+    "loudness_lufs": null,
+    "is_ambience": false
+   },
+   "style_key": null,
+   "participant_id": null,
+   "created_at": 1793298764.994,
+   "notes": ""
+  },
+  {
+   "id": "snd_synth_sewing_synth",
+   "kind": "sound",
+   "name_zh": "缝纫机",
+   "tags": [
+    "缝纫机",
+    "缝纫机"
+   ],
+   "synonyms": [
+    "sewing machine treadle",
+    "old sewing machine"
+   ],
+   "region": [
+    "any"
+   ],
+   "era": [
+    "any"
+   ],
+   "files": [
+    "assets/sounds/library/sewing_synth.mp3"
+   ],
+   "source": {
+    "type": "procedural",
+    "url": null,
+    "download_url": null,
+    "site": null,
+    "author": null,
+    "service": "scripts/synth_sounds.py",
+    "prompt": null,
+    "original_title": null,
+    "notes": "程序合成占位：脚踏缝纫机（模态合成）。有真实录音后建议替换。"
+   },
+   "license": "CC0-1.0（本项目自制）",
+   "license_url": null,
+   "attribution": null,
+   "sensitive": false,
+   "copyright_status": "public_domain",
+   "review_status": "pending",
+   "sound": {
+    "mode": "loop",
+    "interval_range_s": [
+     10.0,
+     30.0
+    ],
+    "gain_db": -10.0,
+    "acoustic_profile": "clean",
+    "duration_s": 8.05,
+    "loudness_lufs": null,
+    "is_ambience": false
+   },
+   "style_key": null,
+   "participant_id": null,
+   "created_at": 1793298791.152,
+   "notes": ""
+  },
+  {
+   "id": "snd_synth_stove_synth",
+   "kind": "sound",
+   "name_zh": "炉子",
+   "tags": [
+    "炉子",
+    "蜂窝煤炉",
+    "炉火"
+   ],
+   "synonyms": [
+    "coal stove crackle",
+    "fire crackling",
+    "kettle boiling"
+   ],
+   "region": [
+    "any"
+   ],
+   "era": [
+    "any"
+   ],
+   "files": [
+    "assets/sounds/library/stove_synth.mp3"
+   ],
+   "source": {
+    "type": "procedural",
+    "url": null,
+    "download_url": null,
+    "site": null,
+    "author": null,
+    "service": "scripts/synth_sounds.py",
+    "prompt": null,
+    "original_title": null,
+    "notes": "程序合成占位：炉火噼啪（滤波噪声）。有真实录音后建议替换。"
+   },
+   "license": "CC0-1.0（本项目自制）",
+   "license_url": null,
+   "attribution": null,
+   "sensitive": false,
+   "copyright_status": "public_domain",
+   "review_status": "pending",
+   "sound": {
+    "mode": "loop",
+    "interval_range_s": [
+     10.0,
+     30.0
+    ],
+    "gain_db": -14.0,
+    "acoustic_profile": "clean",
+    "duration_s": 20.04,
+    "loudness_lufs": null,
+    "is_ambience": false
+   },
+   "style_key": null,
+   "participant_id": null,
+   "created_at": 1793298790.603,
+   "notes": ""
+  },
+  {
+   "id": "snd_synth_trainWhistle_synth",
+   "kind": "sound",
+   "name_zh": "火车汽笛",
+   "tags": [
+    "火车汽笛",
+    "火车汽笛",
+    "火车"
+   ],
+   "synonyms": [
+    "steam train whistle",
+    "train whistle distant",
+    "steam locomotive"
+   ],
+   "region": [
+    "any"
+   ],
+   "era": [
+    "any"
+   ],
+   "files": [
+    "assets/sounds/library/trainWhistle_synth.mp3"
+   ],
+   "source": {
+    "type": "procedural",
+    "url": null,
+    "download_url": null,
+    "site": null,
+    "author": null,
+    "service": "scripts/synth_sounds.py",
+    "prompt": null,
+    "original_title": null,
+    "notes": "程序合成占位：蒸汽汽笛（和弦 + 气流噪声）。有真实录音后建议替换。"
+   },
+   "license": "CC0-1.0（本项目自制）",
+   "license_url": null,
+   "attribution": null,
+   "sensitive": false,
+   "copyright_status": "public_domain",
+   "review_status": "pending",
+   "sound": {
+    "mode": "event",
+    "interval_range_s": [
+     60.0,
+     180.0
+    ],
+    "gain_db": -10.0,
+    "acoustic_profile": "clean",
+    "duration_s": 4.05,
+    "loudness_lufs": null,
+    "is_ambience": false
+   },
+   "style_key": null,
+   "participant_id": null,
+   "created_at": 1793298788.627,
+   "notes": ""
+  },
+  {
+   "id": "snd_synth_wind_synth",
+   "kind": "sound",
+   "name_zh": "风声",
+   "tags": [
+    "风声",
+    "风声",
+    "北风"
+   ],
+   "synonyms": [
+    "wind howling",
+    "wind outdoor"
+   ],
+   "region": [
+    "any"
+   ],
+   "era": [
+    "any"
+   ],
+   "files": [
+    "assets/sounds/library/wind_synth.mp3"
+   ],
+   "source": {
+    "type": "procedural",
+    "url": null,
+    "download_url": null,
+    "site": null,
+    "author": null,
+    "service": "scripts/synth_sounds.py",
+    "prompt": null,
+    "original_title": null,
+    "notes": "程序合成占位：风声（调制滤波噪声）。有真实录音后建议替换。"
+   },
+   "license": "CC0-1.0（本项目自制）",
+   "license_url": null,
+   "attribution": null,
+   "sensitive": false,
+   "copyright_status": "public_domain",
+   "review_status": "pending",
+   "sound": {
+    "mode": "loop",
+    "interval_range_s": [
+     10.0,
+     30.0
+    ],
+    "gain_db": -16.0,
+    "acoustic_profile": "clean",
+    "duration_s": 30.04,
+    "loudness_lufs": null,
+    "is_ambience": true
+   },
+   "style_key": null,
+   "participant_id": null,
+   "created_at": 1793298777.495,
+   "notes": ""
+  }
+ ]
+}

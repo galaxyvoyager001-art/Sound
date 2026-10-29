@@ -108,9 +108,18 @@ class AssetRegistry:
         if rec.license.upper().startswith("CC-BY") and not rec.attribution:
             raise ValueError("CC-BY 类素材必须填写署名")
         with self._lock:
+            self._merge_from_disk()  # 其他进程（如下载脚本）可能刚写过
             (self.private if private else self.shared)[rec.id] = rec
             self.save()
         return rec
+
+    def _merge_from_disk(self) -> None:
+        for path, items in ((self.shared_path, self.shared), (self.private_path, self.private)):
+            try:
+                for k, v in self._load(path).items():
+                    items.setdefault(k, v)
+            except Exception:
+                pass
 
     def remove(self, asset_id: str) -> None:
         with self._lock:
