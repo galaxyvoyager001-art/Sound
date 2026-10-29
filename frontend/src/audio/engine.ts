@@ -5,6 +5,7 @@
 import { DepthMap } from "../shared/depth";
 import { AcousticProfile, AssetTable, SceneManifest, SceneObject, clamp, dbToGain, placementToVec } from "../shared/types";
 import { EffectChain, makeProfileChain, outdoorReverbIR } from "./effects";
+import { loadOverrides } from "./overrides";
 
 type PanMode = "HRTF" | "equalpower";
 
@@ -81,7 +82,8 @@ class ObjectVoice {
     const ctx = eng.ctx;
     const s = obj.sound!;
     this.key = ObjectVoice.keyOf(obj);
-    this.chain = makeProfileChain(ctx, s.acoustic_profile, undefined, ir);
+    const ov = s.acoustic_profile === "clean" ? undefined : loadOverrides()[s.acoustic_profile];
+    this.chain = makeProfileChain(ctx, s.acoustic_profile, ov, ir);
     this.occLP = ctx.createBiquadFilter();
     this.occLP.type = "lowpass";
     this.occLP.frequency.value = 20000;
@@ -425,7 +427,7 @@ export class AudioEngine {
     const buf = await this.buffers.get(url);
     if (!buf) return;
     const ir = await this.loadIR(profile);
-    const chain = makeProfileChain(this.ctx, profile, undefined, ir);
+    const chain = makeProfileChain(this.ctx, profile, profile === "clean" ? undefined : loadOverrides()[profile], ir);
     const src = this.ctx.createBufferSource();
     src.buffer = buf;
     const g = this.ctx.createGain();

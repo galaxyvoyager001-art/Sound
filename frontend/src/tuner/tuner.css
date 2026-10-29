@@ -1,0 +1,16 @@
+body { margin: 0; background: #f6efe3; color: #2e241a; font: 15px/1.6 "PingFang SC", "Microsoft YaHei", sans-serif; }
+main { max-width: 860px; margin: 0 auto; padding: 24px 16px 60px; }
+h1 { font-weight: 500; margin: 0 0 6px; }
+h2 { font-weight: 500; font-size: 17px; margin: 28px 0 8px; border-bottom: 1px solid #dccbb2; padding-bottom: 4px; }
+.hint { color: #7a6650; margin: 0 0 16px; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 8px 0; }
+select, button { font: inherit; padding: 6px 10px; border-radius: 8px; border: 1px solid #c4ad8c; background: #fffaf2; color: inherit; }
+button { cursor: pointer; }
+button:hover { background: #f2e4cd; }
+.ab { display: block; width: 100%; margin: 16px 0 6px; padding: 22px; font-size: 22px; border-radius: 14px; background: #e9dcc6; }
+.ab.b { background: #c8955a; color: #fff; border-color: #a8763f; }
+.status { color: #7a6650; min-height: 1.6em; }
+.param { display: grid; grid-template-columns: 140px 1fr 80px; gap: 10px; align-items: center; margin: 4px 0; }
+.param input { width: 100%; }
+pre { background: #fffaf2; border: 1px solid #e0d0b6; padding: 10px; border-radius: 8px; overflow-x: auto; font-size: 13px; }
+@media (max-width: 560px) { .param { grid-template-columns: 96px 1fr 60px; } }

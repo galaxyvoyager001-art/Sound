@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>时代声学调参</title>
+  </head>
+  <body>
+    <main>
+      <h1>时代声学效果 · 调参试听</h1>
+      <p class="hint">选一个声音，点“播放”，再点中间的大按钮（或按空格）在 A（干净版）和 B（效果版）之间切换。保存后，本机的会谈页会使用这些参数。</p>
+      <section class="row">
+        <label>声音 <select id="clip"></select></label>
+        <label>效果 <select id="profile">
+          <option value="old_radio">老收音机</option>
+          <option value="loudspeaker_horn">大喇叭 / 有线广播</option>
+          <option value="gramophone">留声机</option>
+        </select></label>
+        <label>设备响应 <select id="ir"></select></label>
+        <button id="play">播放</button>
+        <button id="stop">停止</button>
+      </section>
+      <button id="ab" class="ab b">正在听：B</button>
+      <div id="status" class="status"></div>
+      <section>
+        <h2>效果参数</h2>
+        <div id="params"></div>
+        <div class="row">
+          <button id="save">保存为本机默认</button>
+          <button id="reset">恢复这个效果的默认值</button>
+        </div>
+        <details><summary>参数 JSON（可复制到 frontend/src/audio/effects.ts 的 PROFILE_DEFAULTS 作为全局默认）</summary><pre id="json"></pre></details>
+      </section>
+      <section>
+        <h2>空间效果试听（耳机）</h2>
+        <label class="param"><span>距离</span><input id="distance" type="range" min="1" max="60" value="6" step="0.5" /><output id="distance-v"></output></label>
+        <label class="param"><span>方位</span><input id="azimuth" type="range" min="-180" max="180" value="30" /><output id="azimuth-v"></output></label>
+        <label class="param"><span>遮挡</span><input id="occlusion" type="range" min="0" max="1" value="0" step="0.01" /><output id="occlusion-v"></output></label>
+      </section>
+    </main>
+    <script type="module" src="/src/tuner/main.ts"></script>
+  </body>
+</html>
