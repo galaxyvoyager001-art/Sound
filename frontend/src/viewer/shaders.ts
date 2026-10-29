@@ -164,7 +164,7 @@ varying float vAlpha;
 void main() {
   vec2 p = gl_PointCoord * 2.0 - 1.0;
   float a = smoothstep(0.12, 0.0, abs(p.x)) * smoothstep(1.0, 0.2, abs(p.y));
-  gl_FragColor = vec4(0.82, 0.86, 0.92, a * vAlpha * uOpacity * 0.55);
+  gl_FragColor = vec4(0.84, 0.88, 0.94, a * vAlpha * uOpacity * 0.7);
 }
 `;
 

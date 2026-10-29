@@ -93,7 +93,8 @@ def understand(p: dict) -> dict:
     scene = p.get("场景清单") or {}
     labels, control, conf, nav = [], "none", "none", None
     cp = cat.control_phrases
-    if any(x in text for x in cp.get("quiet", [])):
+    short = len(re.sub(r"[^一-龥]", "", text)) <= 8
+    if any(x in text for x in cp.get("quiet", [])) and (short or "太吵" in text or "安静" in text):
         labels.append("control"); control = "quiet"
     elif any(x in text for x in cp.get("end", [])):
         labels.append("control"); control = "end"

@@ -25,7 +25,7 @@ const TIME: Record<string, Partial<Grade>> = {
   中午: { exposure: 1.05, contrast: 1.04 },
   下午: { tint: [1.06, 1.0, 0.9], skyTint: [1.05, 1.0, 0.92] },
   傍晚: { exposure: 0.82, tint: [1.12, 0.93, 0.78], saturation: 0.95, fogColor: [0.95, 0.75, 0.6], fog: 0.12, skyTint: [1.25, 0.9, 0.7], lights: 0.8 },
-  夜晚: { exposure: 0.38, tint: [0.72, 0.84, 1.15], saturation: 0.55, fog: 0.15, fogColor: [0.2, 0.24, 0.35], skyTint: [0.7, 0.8, 1.1], vignette: 0.55, lights: 1.0 },
+  夜晚: { exposure: 0.5, tint: [0.72, 0.84, 1.15], saturation: 0.55, fog: 0.15, fogColor: [0.2, 0.24, 0.35], skyTint: [0.7, 0.8, 1.1], vignette: 0.55, lights: 1.0 },
 };
 
 const WEATHER: Record<string, Partial<Grade>> = {

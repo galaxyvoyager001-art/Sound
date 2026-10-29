@@ -32,6 +32,7 @@ export class MicCapture {
   private stream: MediaStream | null = null;
   private noiseFloorDb = -55;
   private speaking = false;
+  private speakingFrames = 0;
   private aboveCount = 0;
   private belowCount = 0;
   private framesSent = 0;
@@ -62,11 +63,12 @@ export class MicCapture {
     this.framesSent++;
     this.onFrame?.(pcm);
     const db = 20 * Math.log10(Math.max(rms, 1e-6));
-    // 噪声底：安静时缓慢跟随，说话时几乎不动
-    if (!this.speaking) {
-      const rate = db < this.noiseFloorDb ? 0.2 : 0.01;
+    // 噪声底：安静时缓慢跟随；“说话”持续 20 秒以上多半是持续噪声（电视、风扇），也慢慢上浮
+    this.speakingFrames = this.speaking ? this.speakingFrames + 1 : 0;
+    if (!this.speaking || this.speakingFrames > 200) {
+      const rate = db < this.noiseFloorDb ? 0.2 : this.speaking ? 0.03 : 0.01;
       this.noiseFloorDb += (db - this.noiseFloorDb) * rate;
-      this.noiseFloorDb = Math.max(-75, Math.min(-30, this.noiseFloorDb));
+      this.noiseFloorDb = Math.max(-75, Math.min(-20, this.noiseFloorDb));
     }
     const margin = this.systemSpeaking ? 18 : 9;
     const isVoice = db > this.noiseFloorDb + margin && db > -52;

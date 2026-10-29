@@ -24,7 +24,7 @@ from typing import Any, Optional
 
 from ..config import to_rel
 from ..context import AppContext
-from ..providers.asr import ASRResult, BYTES_PER_SECOND
+from ..providers.asr import ASRResult, BYTES_PER_SECOND, NullASRSession
 from ..scene.commands import CommandError, EditCommand, RawCommand, to_typed
 from ..scene.executor import create_viewpoint
 from ..scene.models import Anchor, SceneManifest, Story, new_id
@@ -54,6 +54,8 @@ class SessionState:
     phase: str = "waiting"  # waiting → greeting → gathering → exploring → closing → ended
     turn: list[Sentence] = field(default_factory=list)
     elder_speaking: bool = False
+    vad_since: float = 0.0
+    last_asr_activity: float = 0.0
     last_elder_activity: float = 0.0
     companion_speaking: bool = False
     last_companion_end: float = 0.0
@@ -181,6 +183,7 @@ class SessionRuntime:
             log.warning("语音识别启动失败：%s", e)
             self.log("asr_error", {"error": str(e)[:200]})
         self.tick_task = asyncio.create_task(self.tick_loop())
+        await self.staff_status()
         greet_phase = "greeting" if self.st.phase == "gathering" else "exploring"
         await self.companion_say(greet_phase, opening=True)
 
@@ -207,6 +210,7 @@ class SessionRuntime:
             await self.start()
         elif typ == "vad":
             self.st.elder_speaking = bool(msg.get("speaking"))
+            self.st.vad_since = self.now()
             self.st.last_elder_activity = self.now()
             self.log("vad", {"speaking": self.st.elder_speaking, "t": msg.get("t")})
         elif typ == "barge_in":
@@ -260,6 +264,7 @@ class SessionRuntime:
             return
         await self.send({"type": "transcript", "speaker": "elder", "text": r.text, "final": r.final})
         self.st.last_elder_activity = self.now()
+        self.st.last_asr_activity = self.now()
         if not r.final:
             return
         # 识别出的系统自己的声音（回声）：陪聊说话期间且与最近一句陪聊高度重合时丢弃
@@ -314,20 +319,33 @@ class SessionRuntime:
             if self.st.phase != "ended":
                 self.tick_task = asyncio.create_task(self.tick_loop())
 
+    def elder_is_speaking(self, now: float) -> bool:
+        """老人是否正在说话。真实说话时识别服务每几百毫秒就会给出中间结果；
+        VAD 说在说话、但 3 秒内识别没有任何结果 → 多半是持续噪声（电视、风扇），不再相信 VAD。
+        演示模式没有识别服务，VAD 不参与判断（以工作人员输入为准）。"""
+        if not self.st.elder_speaking or self.asr is None or isinstance(self.asr, NullASRSession):
+            return False
+        return now - max(self.st.last_asr_activity, self.st.vad_since) < 3.0
+
     async def tick(self) -> None:
         now = self.now()
-        silence = now - self.st.last_elder_activity
+        if self.st.companion_speaking and now - self.st.last_companion_end > 45:
+            self.st.companion_speaking = False  # 前端没有回报播放结束时的兜底
+        speaking = self.elder_is_speaking(now)
+        last = self.st.last_elder_activity if speaking or not self.st.elder_speaking else \
+            max(self.st.last_asr_activity, self.st.vad_since)
+        silence = now - last
         if self.st.phase in ("closing", "ended") or self.lock.locked():
             return
-        if self.st.end_requested and not self.st.elder_speaking and silence > 1.5:
+        if self.st.end_requested and not speaking and silence > 1.5:
             self.st.end_requested = False
             await self.begin_closing("elder")
             return
-        if self.st.turn and not self.st.elder_speaking and silence >= self.reply_silence:
+        if self.st.turn and not speaking and silence >= self.reply_silence:
             sentences, self.st.turn = self.st.turn, []
             self.spawn(self.process_turn(sentences))
             return
-        if self.started_mono and now - self.started_mono > self.duration_s and not self.st.elder_speaking and silence > 2:
+        if self.started_mono and now - self.started_mono > self.duration_s and not speaking and silence > 2:
             await self.begin_closing("time_limit")
             return
         # 长时间安静：偶尔轻轻地邀请看看/听听（大部分时间安静陪伴）
@@ -406,7 +424,7 @@ class SessionRuntime:
             if "story" in analysis.labels or (self.st.phase == "gathering" and len(text) >= 12):
                 self.spawn(self.archive_story(text, start, end, turn_id))
             # ---- 回应 ----
-            if self.st.turn or self.st.elder_speaking:
+            if self.st.turn or self.elder_is_speaking(self.now()):
                 self.log("reply_skipped", {"reason": "老人又开口了"})
                 return
             emotion = analysis.emotion
@@ -533,7 +551,8 @@ class SessionRuntime:
             # 只取物件/环境声/新点位类指令，逐个加入
             keep = [c for c in upd.commands if c.op in ("add_object", "add_ambience", "add_viewpoint", "set_season",
                                                          "set_time", "set_weather")]
-            return await self.handle_commands(keep[:4], text, actions, added_by="narration")
+            # 讲述阶段边聊边加：不需要陪聊者说“改好了”，所以不把这些动作告诉陪聊者
+            return await self.handle_commands(keep[:4], text, [], added_by="narration")
         return None
 
     # ================= 导航 =================
@@ -598,7 +617,7 @@ class SessionRuntime:
     async def _announce_ready(self) -> None:
         # 等老人说完、等当前一轮处理完再说
         for _ in range(240):
-            if not self.st.elder_speaking and not self.st.turn and not self.lock.locked() \
+            if not self.elder_is_speaking(self.now()) and not self.st.turn and not self.lock.locked() \
                     and self.now() - self.st.last_elder_activity > 2.0 and not self.st.companion_speaking:
                 break
             await asyncio.sleep(0.5)
@@ -710,7 +729,7 @@ class SessionRuntime:
                 text = "今天就聊到这儿，谢谢您。我们下次再聊。"
             else:
                 return
-        if self.st.turn or (self.st.elder_speaking and phase not in ("closing",)):
+        if self.st.turn or (self.elder_is_speaking(self.now()) and phase not in ("closing",)):
             self.log("reply_skipped", {"reason": "老人正在说话", "text": text})
             return
         await self.say(text, phase, "goodbye" if phase == "closing" else None)

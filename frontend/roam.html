@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#ede1cc" />
+    <title>老家漫游</title>
+    <!--ROAM_DATA-->
+  </head>
+  <body>
+    <div id="app"></div>
+    <div id="enter">
+      <div class="card">
+        <div class="title">老家漫游</div>
+        <div class="sub" id="sub"></div>
+        <button id="go">点一下，进去看看</button>
+        <div class="tip">戴上耳机效果更好 · 用手指拖动可以转头看 · 点亮着的小光点，可以听当时讲的故事</div>
+      </div>
+    </div>
+    <nav id="places"></nav>
+    <div id="story">
+      <button id="story-close" aria-label="关闭">×</button>
+      <div id="story-title"></div>
+      <div id="story-text"></div>
+      <audio id="story-audio" controls></audio>
+    </div>
+    <button id="credits-btn">素材来源</button>
+    <div id="credits"><button id="credits-close">×</button><div id="credits-body"></div></div>
+    <script type="module" src="/src/roam/main.ts"></script>
+  </body>
+</html>

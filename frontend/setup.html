@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>听见从前 · 设置</title>
+  </head>
+  <body>
+    <header>
+      <h1>听见从前 · 设置</h1>
+      <nav>
+        <a href="/api/reports/compare" target="_blank">跨条件对比报告</a>
+        <a href="/tuner.html" target="_blank">声学调参试听</a>
+        <a href="#assets" id="show-assets">素材审核</a>
+      </nav>
+    </header>
+    <main>
+      <div id="service" class="service"></div>
+
+      <section class="card">
+        <h2>新建参与者</h2>
+        <p class="hint">只填编号（如 P001），不要填真名。</p>
+        <form id="new-p" class="row">
+          <input name="id" placeholder="编号，如 P001" required pattern="[A-Za-z0-9_\-]{1,32}" />
+          <select name="region_style"></select>
+          <input name="notes" placeholder="备注（可选，不要写可识别身份的信息）" />
+          <button>新建</button>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>参与者</h2>
+        <div id="plist"></div>
+      </section>
+
+      <section class="card" id="assets" hidden>
+        <h2>声音素材审核</h2>
+        <p class="hint">试听新下载或合成的素材；“通过”的素材检索时优先使用，“不用”的素材永远不会进入场景。</p>
+        <div id="alist"></div>
+      </section>
+    </main>
+
+    <dialog id="roam-dlg">
+      <form method="dialog">
+        <h3>导出“老家漫游”网页</h3>
+        <p class="hint">勾选要放进网页的故事（网页里可以点开听老人自己的讲述）。导出的是一个可以离线打开的 HTML 文件，可以发到家属手机上。</p>
+        <div id="roam-stories"></div>
+        <div class="row">
+          <button value="cancel">取消</button>
+          <button id="roam-go" value="ok">导出</button>
+        </div>
+        <div id="roam-result"></div>
+      </form>
+    </dialog>
+    <script type="module" src="/src/setup/main.ts"></script>
+  </body>
+</html>

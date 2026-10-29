@@ -1,0 +1,22 @@
+html, body { margin: 0; height: 100%; overflow: hidden; background: #ede1cc; font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif; color: #3a2c1e; -webkit-user-select: none; user-select: none; }
+#app { position: fixed; inset: 0; touch-action: none; }
+#enter { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(237, 225, 204, 0.94); z-index: 10; transition: opacity 1s; padding: 16px; }
+#enter.hidden { opacity: 0; pointer-events: none; }
+.card { text-align: center; max-width: 420px; }
+.title { font-size: 40px; letter-spacing: 0.25em; font-family: "Songti SC", "Noto Serif SC", serif; }
+.sub { margin-top: 8px; opacity: 0.7; }
+#go { margin-top: 28px; font: inherit; font-size: 18px; padding: 12px 28px; border-radius: 999px; border: 0; background: #b9824a; color: #fff; }
+.tip { margin-top: 18px; font-size: 13px; opacity: 0.65; line-height: 1.7; }
+#places { position: fixed; left: 0; right: 0; bottom: max(14px, env(safe-area-inset-bottom)); display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; padding: 0 16px; z-index: 5; }
+#places button { font: inherit; font-size: 15px; padding: 7px 14px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.6); background: rgba(58, 44, 30, 0.45); color: #fff8ec; backdrop-filter: blur(6px); }
+#places button.on { background: rgba(185, 130, 74, 0.85); }
+#story { transition: transform 0.4s, visibility 0.4s; position: fixed; left: 50%; bottom: 70px; transform: translate(-50%, calc(100% + 90px)); visibility: hidden; width: min(560px, calc(100% - 32px)); box-sizing: border-box; background: rgba(255, 250, 242, 0.96); border-radius: 16px; padding: 16px 18px; z-index: 8; box-shadow: 0 8px 30px rgba(60, 40, 20, 0.25); }
+#story.open { transform: translate(-50%, 0); visibility: visible; }
+#story-title { font-size: 18px; margin-bottom: 6px; padding-right: 30px; }
+#story-text { font-size: 15px; line-height: 1.8; max-height: 30vh; overflow-y: auto; color: #4a3a2a; }
+#story audio { width: 100%; margin-top: 10px; }
+#story-close, #credits-close { position: absolute; right: 10px; top: 8px; border: 0; background: none; font-size: 24px; color: #8a7358; }
+#credits-btn { position: fixed; right: 12px; top: max(12px, env(safe-area-inset-top)); z-index: 6; font: inherit; font-size: 12px; padding: 4px 10px; border-radius: 999px; border: 0; background: rgba(58, 44, 30, 0.35); color: #fff8ec; }
+#credits { position: fixed; inset: 10% 16px; max-width: 640px; margin: 0 auto; background: #fffaf2; border-radius: 14px; padding: 16px 18px; z-index: 12; overflow-y: auto; display: none; font-size: 13px; }
+#credits.open { display: block; }
+#credits h3 { font-weight: 500; margin-top: 0; }

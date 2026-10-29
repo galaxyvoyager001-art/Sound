@@ -1,0 +1,33 @@
+body { margin: 0; background: #f6efe3; color: #2e241a; font: 15px/1.6 "PingFang SC", "Microsoft YaHei", sans-serif; }
+header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 16px; padding: 16px 24px; border-bottom: 1px solid #dccbb2; background: #fbf6ee; }
+header h1 { font-weight: 500; font-size: 22px; margin: 0; }
+nav { display: flex; gap: 14px; flex-wrap: wrap; }
+a { color: #8a5a24; }
+main { max-width: 1100px; margin: 0 auto; padding: 16px; }
+.card { background: #fffaf3; border: 1px solid #e3d4bd; border-radius: 12px; padding: 14px 18px; margin: 14px 0; }
+.card h2 { font-weight: 500; font-size: 18px; margin: 0 0 6px; }
+.hint { color: #7a6650; font-size: 14px; margin: 4px 0 8px; }
+.service { background: #efe3cf; border-radius: 10px; padding: 10px 14px; font-size: 14px; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 6px 0; }
+input, select, button, .btn { font: inherit; padding: 5px 10px; border-radius: 8px; border: 1px solid #c4ad8c; background: #fff; color: inherit; }
+input[type="checkbox"] { padding: 0; }
+input.dur { width: 60px; }
+button, .btn { cursor: pointer; background: #f3e6d0; text-decoration: none; }
+button:hover, .btn:hover { background: #ead8bb; }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+.danger { background: #f6dcd5; border-color: #d39a8b; }
+.participant { border-top: 1px solid #eadcc6; padding: 10px 0; }
+.participant:first-child { border-top: 0; }
+.pid { font-size: 18px; min-width: 70px; }
+.consent { display: flex; gap: 6px; align-items: center; font-size: 14px; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; margin-top: 6px; }
+th, td { border-bottom: 1px solid #eee2cf; padding: 4px 6px; text-align: left; vertical-align: top; }
+th { font-weight: 500; color: #7a6650; }
+td a { margin-right: 8px; }
+.assets audio { height: 32px; max-width: 220px; }
+.assets tr.sensitive { background: #fbe9e4; }
+dialog { border: 1px solid #c4ad8c; border-radius: 14px; max-width: 640px; width: calc(100% - 32px); background: #fffaf3; }
+dialog h3 { font-weight: 500; margin: 0 0 6px; }
+.story { display: grid; grid-template-columns: 22px 1fr; gap: 2px 8px; padding: 6px 0; border-bottom: 1px solid #eee2cf; }
+.story span { grid-column: 2; color: #6b5843; font-size: 13px; }
+@media (max-width: 600px) { header { padding: 12px 16px; } .row { gap: 6px; } }

@@ -31,6 +31,8 @@ function staffLog(text: string, cls = "") {
 }
 
 viewer.onFrame = () => audio.updateListener(viewer.look.yaw, viewer.look.pitch);
+// 便于工作人员在浏览器控制台排查问题
+(window as unknown as Record<string, unknown>).__tj = { viewer, audio, mic };
 
 async function applyScene(p: ScenePayload) {
   lastScene = p;
@@ -69,7 +71,6 @@ function say(id: string, text: string, audioB64: string | null) {
     if (audio.quiet || ended && id !== "goodbye") return;
     mic.systemSpeaking = true;
     send({ type: "tts_state", id, playing: true, t: mic.timeS });
-    staffLog(`陪聊：${text}`, "companion");
     try {
       if (audioB64) await audio.playSpeech(b64ToBuf(audioB64));
       else await speakWithBrowser(text);

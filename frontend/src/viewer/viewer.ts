@@ -91,8 +91,8 @@ export class PanoramaViewer {
   private gradeFrom: Grade = this.gradeNow;
   private gradeTo: Grade = this.gradeNow;
   private gradeT = 1;
-  private fade = 1; // 开场从纸色淡入
-  private fadeTarget = 0;
+  private fade = 1; // 开场是纸色，第一张全景加载好后淡入
+  private fadeTarget = 1;
   private clock = new THREE.Clock();
   private manifest: SceneManifest | null = null;
   private assets: AssetTable = {};
@@ -125,7 +125,7 @@ export class PanoramaViewer {
     this.sphere.renderOrder = -10;
     this.scene.add(this.sphere, this.objectsRoot, this.storiesRoot);
 
-    this.rain = this.makePrecip(5000, RAIN_FRAG, 14, 1.6);
+    this.rain = this.makePrecip(6000, RAIN_FRAG, 14, 3.2);
     this.snow = this.makePrecip(2500, SNOW_FRAG, 1.1, 2.2);
     this.scene.add(this.rain, this.snow);
 
@@ -230,6 +230,11 @@ export class PanoramaViewer {
     this.updateInterest();
   }
 
+  /** 第一张全景还没有出来（生成中） */
+  get hasPanorama(): boolean {
+    return this.loadedPanorama !== null;
+  }
+
   private async crossfadeTo(vp: Viewpoint, crossfade: boolean) {
     const url = this.assets[`file:${vp.panorama_path}`]?.urls[0];
     if (!url) return;
@@ -318,7 +323,7 @@ export class PanoramaViewer {
 
   private syncObjects(highlight: string[]) {
     if (!this.manifest) return;
-    const visible = this.manifest.condition === "audio_only" ? [] :
+    const visible = this.manifest.condition === "audio_only" || !this.loadedPanorama ? [] :
       this.manifest.objects.filter((o) => o.placement && o.placement.viewpoint_id === this.currentViewpoint);
     const keep = new Set(visible.map((o) => o.id));
     for (const [id, n] of this.nodes) {
@@ -457,9 +462,15 @@ export class PanoramaViewer {
     if (!this.manifest) return;
     for (const n of this.storyNodes.values()) this.storiesRoot.remove(n);
     this.storyNodes.clear();
+    const perAnchor = new Map<string, number>();
     for (const s of this.manifest.stories) {
       const pos = this.anchorPosition(s);
       if (!pos) continue;
+      // 同一个锚点上的多个故事：往上叠放，避免重叠
+      const k = `${s.anchor.kind}:${s.anchor.id}`;
+      const idx = perAnchor.get(k) ?? 0;
+      perAnchor.set(k, idx + 1);
+      pos.y += idx * 0.55 * Math.max(1, pos.length() / 6);
       const g = new THREE.Group();
       g.position.copy(pos);
       g.lookAt(0, pos.y, 0);
