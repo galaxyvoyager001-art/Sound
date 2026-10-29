@@ -1,0 +1,11 @@
+# 参与者数据（录音、文字、场景、日志）——绝不提交
+data/
+.env
+__pycache__/
+*.pyc
+.pytest_cache/
+node_modules/
+frontend/dist/
+models/
+*.onnx
+.venv/

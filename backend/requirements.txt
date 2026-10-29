@@ -1,0 +1,17 @@
+fastapi>=0.115
+uvicorn[standard]>=0.30
+httpx>=0.27
+websockets>=13
+pydantic>=2.7
+python-dotenv>=1.0
+PyYAML>=6.0
+numpy>=1.26
+pillow>=10.3
+onnxruntime>=1.18
+pypinyin>=0.51
+python-multipart>=0.0.9
+# 开发/测试
+pytest>=8
+pytest-asyncio>=0.23
+# 可选：更好的物件抠图（体积较大，按需安装）
+# rembg>=2.0
