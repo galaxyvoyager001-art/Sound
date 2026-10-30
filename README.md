@@ -87,11 +87,13 @@ cd backend && uvicorn app.main:app --host 127.0.0.1 --port 8000
 
 ## 配置
 
+最简单的方法：运行下面的命令，按提示粘贴 Key（输入时不显示），会自动生成 `.env`：
+
 ```bash
-cp .env.example .env
+python scripts/setup_env.py
 ```
 
-然后编辑 `.env`，至少填写 `DASHSCOPE_API_KEY`。常用项：
+也可以手动复制 `.env.example` 为 `.env` 再编辑，至少填写 `DASHSCOPE_API_KEY`。**Key 只能写在 `.env` 里**（已在 .gitignore 中，不会被提交）；不要写进 `.env.example`，它会被上传到 GitHub。常用项：
 
 | 变量 | 默认 | 说明 |
 |---|---|---|
