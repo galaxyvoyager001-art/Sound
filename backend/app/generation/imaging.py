@@ -79,18 +79,35 @@ def _dilate(mask: np.ndarray) -> np.ndarray:
     return out
 
 
-def background_mask(rgb: np.ndarray, tol: float = 30.0) -> np.ndarray:
-    """与边框连通的近白色区域 = 背景。"""
-    dist = (255.0 - rgb).max(axis=2)
-    sat = rgb.max(axis=2) - rgb.min(axis=2)
-    near_white = (dist < tol) & (sat < tol * 0.8)
-    region = np.zeros_like(near_white)
-    region[0, :] = near_white[0, :]
-    region[-1, :] = near_white[-1, :]
-    region[:, 0] = near_white[:, 0]
-    region[:, -1] = near_white[:, -1]
-    for _ in range(max(rgb.shape[:2]) * 2):
-        nxt = _dilate(region) & near_white
+def _border_palette(rgb: np.ndarray, ring: int, n: int = 24) -> np.ndarray:
+    """边框一圈像素的代表色（背景可能是纯白、灰色影棚布、带渐变的纸，甚至白色地面）。"""
+    h, w, _ = rgb.shape
+    border = np.concatenate([rgb[:ring].reshape(-1, 3), rgb[-ring:].reshape(-1, 3),
+                             rgb[:, :ring].reshape(-1, 3), rgb[:, -ring:].reshape(-1, 3)])
+    q = (border // 16).astype(np.int32)
+    keys, inv, counts = np.unique(q[:, 0] * 256 + q[:, 1] * 16 + q[:, 2], return_inverse=True, return_counts=True)
+    order = np.argsort(-counts)[:n]
+    # 只保留占边框 1% 以上的颜色（排除物件碰到边缘的那一点）
+    order = [k for k in order if counts[k] >= 0.01 * len(border)] or list(order[:1])
+    return np.array([border[inv.ravel() == k].mean(axis=0) for k in order], np.float32)
+
+
+def background_mask(rgb: np.ndarray, tol: float = 26.0) -> np.ndarray:
+    """与边框连通、颜色接近边框颜色的区域 = 背景。"""
+    h, w, _ = rgb.shape
+    ring = max(2, int(min(h, w) * 0.02))
+    palette = _border_palette(rgb, ring)
+    d = np.min(np.linalg.norm(rgb[:, :, None, :] - palette[None, None], axis=-1), axis=-1)
+    # 模型常在物件下面画一块白色“地面”：与背景连通的近白色也算背景
+    whiteish = ((255.0 - rgb).max(axis=2) < 22) & ((rgb.max(axis=2) - rgb.min(axis=2)) < 14)
+    cand = (d < tol) | whiteish
+    region = np.zeros_like(cand)
+    region[:ring] = cand[:ring]
+    region[-ring:] = cand[-ring:]
+    region[:, :ring] |= cand[:, :ring]
+    region[:, -ring:] |= cand[:, -ring:]
+    for _ in range(max(h, w) * 2):
+        nxt = _dilate(region) & cand
         if (nxt == region).all():
             break
         region = nxt
@@ -98,7 +115,7 @@ def background_mask(rgb: np.ndarray, tol: float = 30.0) -> np.ndarray:
 
 
 def matte_object(data: bytes, work_size: int = 512) -> Image.Image:
-    """白底物件插画 → 透明背景 RGBA，并裁切到物件边界（底边即物件着地处）。"""
+    """白底（或任何纯色/渐变影棚背景）物件图 → 透明背景 RGBA，并裁切到物件边界（底边即物件着地处）。"""
     try:  # 装了 rembg 就用更好的抠图
         from rembg import remove  # type: ignore
 
@@ -115,9 +132,10 @@ def matte_object(data: bytes, work_size: int = 512) -> Image.Image:
     alpha = alpha.filter(ImageFilter.MinFilter(3)).filter(ImageFilter.GaussianBlur(1.6))
     a = np.asarray(alpha, np.float32) / 255.0
     rgb = np.asarray(img, np.float32)
-    # 去除边缘白边：按“与白色混合”的模型反解前景色
+    # 去除边缘的背景色描边：按“与背景色混合”的模型反解前景色
+    bg_col = np.asarray(small, np.float32)[bg].mean(axis=0) if bg.any() else np.array([255.0, 255, 255])
     safe = np.maximum(a, 0.15)[..., None]
-    fg = (rgb - (1 - safe) * 255.0) / safe
+    fg = (rgb - (1 - safe) * bg_col) / safe
     fg = np.where(a[..., None] > 0.98, rgb, fg)
     out = np.dstack([fg.clip(0, 255), a * 255]).astype(np.uint8)
     return _crop_alpha(Image.fromarray(out, "RGBA"))
