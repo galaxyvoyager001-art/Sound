@@ -38,6 +38,7 @@ class PanoramaResult:
     asset_id: str
     prompt: str
     placeholder: bool = False
+    error: str = ""
 
 
 class GenerationService:
@@ -49,6 +50,7 @@ class GenerationService:
         self.catalog = catalog
         self.depth_sampler = depth_sampler
         self._obj_locks: dict[str, asyncio.Lock] = {}
+        self.last_error = ""
 
     def rel(self, path: Path) -> str:
         return to_rel(path)
@@ -59,15 +61,25 @@ class GenerationService:
         """生成（或重绘）一个点位的全景图和深度图。mode=regenerate 失败时返回 None（保持当前画面）。"""
         prompt, negative = panorama_prompt(self.catalog, m, vp, restyle=(mode == "regenerate"))
         placeholder = False
+        error = ""
         provider_depth = None
         try:
             raw, provider_depth = await self.p.panorama.generate_panorama(prompt, negative)
             native = self.p.panorama.native_equirect
         except Exception as e:
             log.warning("全景生成失败：%s", e)
+            self.last_error = f"全景生成失败：{str(e)[:300]}"
             if mode == "regenerate" and vp.panorama_path:
                 return None
-            raw, _ = await ProceduralPanorama().generate_panorama(prompt, negative)
+            error = self.last_error
+            if self.p.cloud:
+                # 云端失败时用柔和的暖色背景兜底（比粗糙的程序化房子更不容易让人困惑）
+                import io
+                b = io.BytesIO()
+                blurred_warm_background().save(b, "PNG")
+                raw = b.getvalue()
+            else:
+                raw, _ = await ProceduralPanorama().generate_panorama(prompt, negative)
             native, placeholder = True, True
 
         loop = asyncio.get_running_loop()
@@ -99,7 +111,7 @@ class GenerationService:
             self.registry.register(rec, private=not shared)
         except Exception as e:
             log.warning("全景登记失败：%s", e)
-        return PanoramaResult(self.rel(pano_path), self.rel(depth_path), asset_id, prompt, placeholder)
+        return PanoramaResult(self.rel(pano_path), self.rel(depth_path), asset_id, prompt, placeholder, error)
 
     def audio_only_background(self) -> tuple[str, str]:
         base = self.s.assets_dir / "images" / "panoramas"
@@ -139,6 +151,7 @@ class GenerationService:
                 src_type = "ai" if self.p.cloud else "procedural"
             except Exception as e:
                 log.warning("物件插画生成失败 %s：%s", canon, e)
+                self.last_error = f"物件图“{canon}”生成失败：{str(e)[:300]}"
                 return None
             loop = asyncio.get_running_loop()
             img: Image.Image = await loop.run_in_executor(None, matte_object, raw)

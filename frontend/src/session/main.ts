@@ -14,6 +14,7 @@ const log = document.getElementById("staff-log")!;
 const statusEl = document.getElementById("staff-status")!;
 
 const viewer = new PanoramaViewer(app);
+viewer.look.opts.idleBeforeAutoS = 12; // 拖动或语音转向后，12 秒没有操作再恢复自动环顾
 const audio = new AudioEngine({ maxVolume: Number(localStorage.getItem("maxVolume") ?? 0.8),
   panMode: (localStorage.getItem("panMode") as "HRTF" | "equalpower") ?? "equalpower" });
 const mic = new MicCapture();
@@ -127,6 +128,9 @@ async function handleMessage(msg: any) {
     case "status":
       statusEl.textContent = msg.text;
       break;
+    case "staff_notice":
+      staffLog("⚠ " + msg.text, "error");
+      break;
     case "stop_speaking":
       audio.stopSpeech(0.15);
       speechSynthesis?.cancel?.();
@@ -184,6 +188,35 @@ startOverlay.addEventListener("click", async () => {
   connect();
 });
 
+// ---------------- 鼠标 / 触摸拖动环顾（工作人员测试用；老人不需要操作） ----------------
+{
+  const el = viewer.renderer.domElement;
+  let last: { x: number; y: number } | null = null;
+  el.addEventListener("pointerdown", (e) => {
+    last = { x: e.clientX, y: e.clientY };
+    el.setPointerCapture(e.pointerId);
+    document.body.style.cursor = "grabbing";
+  });
+  el.addEventListener("pointermove", (e) => {
+    if (!last) {
+      document.body.style.cursor = "grab";
+      return;
+    }
+    const k = 90 / el.clientWidth;
+    viewer.look.drag(-(e.clientX - last.x) * k, (e.clientY - last.y) * k);
+    last = { x: e.clientX, y: e.clientY };
+  });
+  const end = () => { last = null; document.body.style.cursor = ""; };
+  el.addEventListener("pointerup", end);
+  el.addEventListener("pointercancel", end);
+  // 鼠标停止移动 3 秒后隐藏光标（屏幕上不显示多余的东西）
+  let hideTimer = 0;
+  window.addEventListener("pointermove", () => {
+    clearTimeout(hideTimer);
+    hideTimer = window.setTimeout(() => (document.body.style.cursor = "none"), 3000);
+  });
+}
+
 // ---------------- 工作人员面板（老人看不到） ----------------
 let corner = 0;
 document.addEventListener("keydown", (e) => {
@@ -212,6 +245,13 @@ vol.value = String(Number(localStorage.getItem("maxVolume") ?? 0.8) * 100);
 vol.addEventListener("input", () => {
   audio.setMaxVolume(Number(vol.value) / 100);
   localStorage.setItem("maxVolume", String(Number(vol.value) / 100));
+});
+const autoLook = document.getElementById("staff-autolook") as HTMLInputElement;
+autoLook.checked = localStorage.getItem("autoLook") !== "0";
+viewer.look.autoEnabled = autoLook.checked;
+autoLook.addEventListener("change", () => {
+  viewer.look.autoEnabled = autoLook.checked;
+  localStorage.setItem("autoLook", autoLook.checked ? "1" : "0");
 });
 const pan = document.getElementById("staff-pan") as HTMLSelectElement;
 pan.value = audio.panMode;

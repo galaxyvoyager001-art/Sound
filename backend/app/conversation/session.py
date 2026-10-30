@@ -110,6 +110,7 @@ class SessionRuntime:
         self._say_ids: dict[str, dict] = {}
         self.reply_silence = self.s.reply_silence_s
         ctx.scenes.subscribe(self.scene_id, self._on_scene_change)
+        ctx.scenes.notice_listeners.setdefault(self.scene_id, []).append(self._on_notice)
 
     # ================= 基础 =================
     @property
@@ -643,6 +644,10 @@ class SessionRuntime:
             return f"正在照着老人说的去画{name}，画好了就带老人过去"
         return None
 
+    async def _on_notice(self, text: str) -> None:
+        self.log("staff_notice", {"text": text})
+        await self.send({"type": "staff_notice", "text": text})
+
     async def _on_scene_change(self, m: SceneManifest, highlight: list[str]) -> None:
         await self.push_scene(m, highlight)
         # 第一张全景完成 → 邀请老人看看
@@ -865,6 +870,9 @@ class SessionRuntime:
         except Exception:
             pass
         self.ctx.scenes.unsubscribe(self.scene_id, self._on_scene_change)
+        lst = self.ctx.scenes.notice_listeners.get(self.scene_id, [])
+        if self._on_notice in lst:
+            lst.remove(self._on_notice)
         # 生成完整录音 wav（研究用）
         try:
             await asyncio.get_running_loop().run_in_executor(None, self._write_wav)

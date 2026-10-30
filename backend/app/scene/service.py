@@ -44,6 +44,8 @@ class SceneService:
         self.providers = providers
         self.db = db
         self.listeners: dict[str, list[Listener]] = {}
+        # 给工作人员面板的提示（例如外部服务失败的原因），老人看不到
+        self.notice_listeners: dict[str, list[Callable[[str], Awaitable[None]]]] = {}
         self.tasks: set[asyncio.Task] = set()
 
     # ---------------- 订阅 ----------------
@@ -53,6 +55,13 @@ class SceneService:
     def unsubscribe(self, scene_id: str, fn: Listener) -> None:
         if fn in self.listeners.get(scene_id, []):
             self.listeners[scene_id].remove(fn)
+
+    async def notice(self, scene_id: str, text: str) -> None:
+        for fn in list(self.notice_listeners.get(scene_id, [])):
+            try:
+                await fn(text)
+            except Exception:
+                pass
 
     async def notify(self, m: SceneManifest, highlight: list[str]) -> None:
         for fn in list(self.listeners.get(m.scene_id, [])):
@@ -147,6 +156,7 @@ class SceneService:
             self.db.log_event(session_id, "job_done", {"kind": job.kind, "target": job.target_id})
         except Exception as e:
             log.exception("后台任务失败 %s", job)
+            await self.notice(scene_id, f"后台任务 {job.kind} 失败：{str(e)[:300]}")
             self.db.log_event(session_id, "job_failed", {"kind": job.kind, "target": job.target_id, "error": str(e)[:300]})
 
     async def _job_object(self, scene_id: str, object_id: str) -> None:
@@ -157,6 +167,8 @@ class SceneService:
         if m.condition == "audio_only":
             return
         rec = await self.generation.object_asset(obj.type, m.region_style, m.era)
+        if rec is None and self.generation.last_error:
+            await self.notice(scene_id, self.generation.last_error)
         model = await self.generation.object_model3d(rec) if rec else None
 
         def upd(w: SceneManifest):
@@ -191,6 +203,9 @@ class SceneService:
             res = type("R", (), {"panorama_path": pano, "depth_path": depth, "asset_id": None, "prompt": ""})()
         else:
             res = await self.generation.generate_panorama(m, vp, mode)
+        if getattr(res, "error", "") or res is None:
+            await self.notice(scene_id, (getattr(res, "error", "") or self.generation.last_error or "全景重绘失败")
+                              + "（画面先用暖色背景代替）")
         if res is None:  # 重绘失败：保持原画面
             await self.system_update(scene_id, lambda w: setattr(w.viewpoint(vp_id), "status", "ready") if w.viewpoint(vp_id) else None,
                                      {"kind": "system", "job": "panorama_failed", "viewpoint": vp_id})
@@ -368,6 +383,8 @@ class SceneService:
         res = await self.generation.generate_panorama(m, vp, "new", shared=True)
         if not res:
             return
+        if res.error:
+            await self.notice(scene_id, res.error + "（画面先用暖色背景代替）")
         self.depth.load_png(vp_id, to_abs(res.depth_path))
         cache_path.parent.mkdir(parents=True, exist_ok=True)
         cache = json.loads(cache_path.read_text("utf-8")) if cache_path.exists() else {}
