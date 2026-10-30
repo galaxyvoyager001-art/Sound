@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>听见从前 · 使用模拟图</title>
+<style>
+  :root { --paper:#f4ecdf; --ink:#3a2c1e; --brown:#8a5a24; --warm:#c8955a; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:"WenQuanYi Zen Hei","PingFang SC","Microsoft YaHei",sans-serif; color:var(--ink); background:#ddd; }
+  .frame { width:1920px; height:1080px; background:var(--paper); position:relative; overflow:hidden; display:none; }
+  .frame.on { display:block; }
+  .title { position:absolute; left:40px; top:28px; font-size:40px; font-weight:bold; letter-spacing:2px; }
+  .title small { font-size:24px; font-weight:normal; color:#7a6650; margin-left:16px; letter-spacing:0; }
+  .brand { position:absolute; right:40px; top:40px; font-size:20px; color:#9a8468; letter-spacing:6px; }
+
+  /* 屏幕：老人看到的画面 */
+  .screen { position:absolute; overflow:hidden; background:#222; border-radius:6px; box-shadow:0 18px 50px rgba(60,40,20,.35); }
+  .pano { position:absolute; inset:0; background:url(pano.jpg) no-repeat; background-size:169% auto; background-position:46% 38%; }
+  .vignette { position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(ellipse at center, rgba(0,0,0,0) 55%, rgba(40,25,10,.38) 100%); }
+  .grain { position:absolute; inset:0; opacity:.10; mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.5) 1px, transparent 1px); background-size:3px 3px; }
+  .obj { position:absolute; background:url(hundun.png) no-repeat center bottom / contain; filter:sepia(.18) saturate(.92); }
+  .shadow { position:absolute; border-radius:50%; background:radial-gradient(ellipse, rgba(30,20,10,.38), rgba(30,20,10,0) 70%); }
+  .glow { position:absolute; width:46px; height:46px; border-radius:50%;
+    background:radial-gradient(circle, #fff6dc 0 18%, rgba(255,200,120,.85) 30%, rgba(255,190,110,.25) 60%, rgba(255,190,110,0) 72%); }
+  .hl { filter:drop-shadow(0 0 18px rgba(255,214,140,.95)) drop-shadow(0 0 6px rgba(255,230,180,.9)) sepia(.1) brightness(1.08); }
+
+  /* 编号标注 */
+  .pin { position:absolute; width:46px; height:46px; border-radius:50%; background:var(--warm); color:#fff; font-size:24px;
+    font-weight:bold; display:flex; align-items:center; justify-content:center; box-shadow:0 0 0 4px rgba(255,255,255,.85); z-index:5; }
+  .notes { position:absolute; right:40px; top:150px; width:370px; }
+  .note { display:flex; gap:14px; margin-bottom:26px; font-size:21px; line-height:1.55; }
+  .note .n { flex:none; width:40px; height:40px; border-radius:50%; background:var(--warm); color:#fff; font-weight:bold;
+    display:flex; align-items:center; justify-content:center; font-size:20px; margin-top:2px; }
+  .note b { display:block; font-size:23px; margin-bottom:2px; }
+  .foot { position:absolute; left:40px; bottom:26px; font-size:19px; color:#8a7358; }
+
+  /* 工作人员面板 */
+  .staff { position:absolute; right:0; top:0; bottom:0; width:430px; background:rgba(30,24,18,.94); color:#f2e8d8; padding:18px;
+    font-size:15px; line-height:1.55; display:flex; flex-direction:column; gap:9px; }
+  .staff h3 { margin:0; font-size:19px; font-weight:normal; }
+  .staff .muted { opacity:.75; font-size:13.5px; }
+  .staff .row { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+  .staff .btn { padding:4px 10px; border-radius:6px; border:1px solid #8a7356; background:#4a3b2c; font-size:13.5px; }
+  .staff .input { flex:1; padding:5px 8px; border-radius:6px; border:1px solid #6b5a46; background:#2b231b; color:#a8987f; font-size:13.5px; }
+  .staff .log { border-top:1px solid #5a4a38; padding-top:8px; font-size:14.5px; display:flex; flex-direction:column; gap:6px; }
+  .e { color:#ffe0a8; } .c { color:#b9d6ff; } .s { color:#a6d9a6; } .w { color:#ff9c8a; }
+  .level { height:8px; border-radius:4px; background:#2b231b; overflow:hidden; } .level i { display:block; height:100%; width:62%; background:linear-gradient(90deg,#6fbf73,#e6c35c); }
+
+  /* 说话气泡（画面外的示意，真实界面不显示文字） */
+  .bubble { position:absolute; background:#fff; border-radius:18px; padding:14px 20px; font-size:22px; line-height:1.5;
+    box-shadow:0 6px 18px rgba(60,40,20,.15); max-width:520px; }
+  .bubble .who { font-size:16px; color:#8a7358; display:block; margin-bottom:2px; }
+  .bubble.elder { background:#fff3dc; } .bubble.comp { background:#eaf2ff; }
+  .tag { position:absolute; top:-40px; left:0; font-size:22px; font-weight:bold; color:var(--brown); }
+  .arrow { position:absolute; font-size:60px; color:var(--warm); }
+
+  /* 天气 */
+  .dusk .pano { filter: sepia(.35) saturate(.85) brightness(.72) hue-rotate(-12deg) contrast(.95); }
+  .dusk .tint { position:absolute; inset:0; background:linear-gradient(180deg, rgba(255,140,60,.28), rgba(80,50,90,.18)); mix-blend-mode:soft-light; }
+  .rain { position:absolute; inset:-20%; opacity:.5;
+    background-image: repeating-linear-gradient(105deg, rgba(230,235,245,.0) 0 14px, rgba(230,235,245,.55) 14px 15px, rgba(230,235,245,0) 15px 46px),
+                      repeating-linear-gradient(100deg, rgba(230,235,245,.0) 0 31px, rgba(230,235,245,.35) 31px 32px, rgba(230,235,245,0) 32px 70px); }
+  .fog { position:absolute; inset:0; background:linear-gradient(180deg, rgba(160,165,175,.0) 30%, rgba(160,165,175,.35)); }
+  .snow .pano { filter: saturate(.55) brightness(1.08) contrast(.9) hue-rotate(8deg); }
+  .snowcap { position:absolute; inset:0; background:linear-gradient(180deg, rgba(255,255,255,.22), rgba(235,240,250,.35)); }
+  .flakes { position:absolute; inset:0; opacity:.85;
+    background-image: radial-gradient(circle, #fff 0 2px, transparent 3px), radial-gradient(circle, #fff 0 1.5px, transparent 2.5px);
+    background-size: 63px 71px, 37px 43px; background-position: 0 0, 18px 22px; }
+  .wlabel { position:absolute; left:0; right:0; bottom:-56px; text-align:center; font-size:26px; }
+
+  /* 设置页 */
+  .browser { position:absolute; left:40px; top:120px; width:1440px; height:900px; background:#f6efe3; border-radius:12px; overflow:hidden;
+    box-shadow:0 18px 50px rgba(60,40,20,.25); }
+  .bar { height:46px; background:#e6dccd; display:flex; align-items:center; gap:10px; padding:0 16px; font-size:15px; color:#6b5843; }
+  .bar .dot { width:13px; height:13px; border-radius:50%; background:#d9c4a8; }
+  .bar .url { margin-left:20px; background:#fff; border-radius:16px; padding:5px 16px; flex:1; }
+  .setup header { display:flex; gap:22px; align-items:baseline; padding:16px 28px; border-bottom:1px solid #dccbb2; background:#fbf6ee; }
+  .setup header h1 { font-size:24px; margin:0; font-weight:normal; }
+  .setup header a { color:#8a5a24; font-size:16px; text-decoration:underline; }
+  .setup main { padding:14px 28px; }
+  .svc { background:#efe3cf; border-radius:10px; padding:10px 14px; font-size:15px; }
+  .card { background:#fffaf3; border:1px solid #e3d4bd; border-radius:12px; padding:14px 18px; margin:12px 0; }
+  .card h2 { font-size:18px; margin:0 0 8px; font-weight:normal; }
+  .ctrl { display:inline-block; padding:5px 12px; border-radius:8px; border:1px solid #c4ad8c; background:#fff; font-size:15px; margin-right:6px; }
+  .ctrl.b { background:#f3e6d0; } .ctrl.d { background:#f6dcd5; border-color:#d39a8b; } .ctrl.go { background:#c8955a; color:#fff; border-color:#a8763f; }
+  .setup table { width:100%; border-collapse:collapse; font-size:14px; margin-top:8px; }
+  .setup td, .setup th { border-bottom:1px solid #eee2cf; padding:6px; text-align:left; }
+  .setup th { color:#7a6650; font-weight:normal; }
+  .setup td a { color:#8a5a24; margin-right:10px; }
+  .chk { display:inline-block; width:16px; height:16px; border-radius:3px; background:#3b7be0; vertical-align:-2px; margin-right:6px; }
+
+  /* 手机 */
+  .phone { position:absolute; width:400px; height:840px; border-radius:52px; background:#1d1712; padding:14px; box-shadow:0 22px 60px rgba(40,25,10,.35); }
+  .phone .in { position:relative; width:100%; height:100%; border-radius:40px; overflow:hidden; background:#ede1cc; }
+  .phone .pano { background-size:auto 128%; background-position:44% 40%; }
+  .notch { position:absolute; left:50%; top:10px; width:110px; height:28px; background:#1d1712; border-radius:16px; transform:translateX(-50%); z-index:9; }
+  .places { position:absolute; left:0; right:0; bottom:26px; display:flex; gap:8px; justify-content:center; }
+  .places span { padding:7px 14px; border-radius:999px; background:rgba(58,44,30,.5); color:#fff8ec; font-size:15px; border:1px solid rgba(255,255,255,.55); }
+  .places span.on { background:rgba(185,130,74,.9); }
+  .label { position:absolute; padding:4px 12px; border-radius:10px; background:rgba(60,40,20,.6); color:#fff6e6; font-size:15px; white-space:nowrap; transform:translateX(-50%); }
+  .credits { position:absolute; right:14px; top:48px; font-size:12px; padding:4px 10px; border-radius:999px; background:rgba(58,44,30,.4); color:#fff8ec; }
+  .storycard { position:absolute; left:14px; right:14px; bottom:84px; background:rgba(255,250,242,.97); border-radius:18px; padding:16px 18px;
+    box-shadow:0 8px 30px rgba(60,40,20,.3); }
+  .storycard h4 { margin:0 0 6px; font-size:19px; font-weight:normal; }
+  .storycard p { margin:0; font-size:15px; line-height:1.8; color:#4a3a2a; }
+  .audio { margin-top:10px; height:36px; border-radius:18px; background:#efe6d6; display:flex; align-items:center; gap:10px; padding:0 12px; font-size:13px; color:#6b5843; }
+  .audio .pbar { flex:1; height:4px; background:#d6c6ac; border-radius:2px; position:relative; } .audio .pbar i { position:absolute; left:0; top:0; bottom:0; width:38%; background:#b9824a; border-radius:2px; }
+  .enter { position:absolute; inset:0; background:rgba(237,225,204,.93); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:24px; }
+  .enter .t { font-size:40px; letter-spacing:10px; } .enter .sub { margin-top:8px; opacity:.7; font-size:17px; }
+  .enter .go { margin-top:30px; padding:12px 28px; border-radius:999px; background:#b9824a; color:#fff; font-size:18px; }
+  .enter .tip { margin-top:18px; font-size:13px; opacity:.65; line-height:1.7; }
+
+  /* 场景插画：活动室 */
+  .room { position:absolute; left:40px; top:120px; width:1440px; height:900px; border-radius:14px; overflow:hidden;
+    background:linear-gradient(180deg,#efe3cf 0 68%, #b99a74 68% 100%); box-shadow:0 18px 50px rgba(60,40,20,.25); }
+</style>
+</head>
+<body>
+
+<!-- 1 使用场景 -->
+<section class="frame" id="f1">
+  <div class="title">使用场景<small>养老院 / 社区活动室：老人只需要说话</small></div>
+  <div class="brand">听见从前</div>
+  <div class="room">
+    <!-- 窗 -->
+    <div style="position:absolute;left:60px;top:70px;width:220px;height:300px;background:linear-gradient(180deg,#dfe9ef,#f3efe2);border:10px solid #c9b190;border-radius:4px"></div>
+    <!-- 电视 -->
+    <div style="position:absolute;left:380px;top:80px;width:860px;height:500px;background:#1b1611;border-radius:14px;padding:14px">
+      <div style="position:relative;width:100%;height:100%;overflow:hidden;border-radius:4px">
+        <div class="pano"></div>
+        <div class="obj" style="left:40px;bottom:6px;width:210px;height:200px"></div>
+        <div class="glow" style="left:128px;top:250px;width:30px;height:30px"></div>
+        <div class="vignette"></div>
+      </div>
+    </div>
+    <div style="position:absolute;left:760px;top:580px;width:100px;height:40px;background:#4a3a2c"></div>
+    <div style="position:absolute;left:600px;top:612px;width:420px;height:22px;background:#6b5038;border-radius:6px"></div>
+    <!-- 音箱 -->
+    <div style="position:absolute;left:300px;top:430px;width:60px;height:150px;background:#3b2f24;border-radius:8px"></div>
+    <div style="position:absolute;left:1260px;top:430px;width:60px;height:150px;background:#3b2f24;border-radius:8px"></div>
+    <!-- 小桌 + 麦克风 -->
+    <div style="position:absolute;left:880px;top:700px;width:180px;height:16px;background:#7a5a3c;border-radius:4px"></div>
+    <div style="position:absolute;left:960px;top:716px;width:14px;height:120px;background:#6b4e33"></div>
+    <div style="position:absolute;left:940px;top:672px;width:52px;height:30px;background:#2c2c2c;border-radius:50% 50% 8px 8px"></div>
+    <!-- 老人背影 + 椅子 -->
+    <svg style="position:absolute;left:470px;top:470px" width="420" height="440" viewBox="0 0 420 440">
+      <rect x="40" y="160" width="340" height="250" rx="40" fill="#8c6a4a"/>
+      <rect x="10" y="230" width="70" height="180" rx="30" fill="#7c5d40"/>
+      <rect x="340" y="230" width="70" height="180" rx="30" fill="#7c5d40"/>
+      <path d="M110 420 C110 300 140 230 210 225 C280 230 310 300 310 420 Z" fill="#5a6b80"/>
+      <circle cx="210" cy="180" r="62" fill="#d8d2c6"/>
+      <path d="M150 170 C150 120 270 120 270 170 C260 150 160 150 150 170 Z" fill="#e9e5dc"/>
+    </svg>
+    <!-- 工作人员 + 笔记本 -->
+    <svg style="position:absolute;left:1120px;top:560px" width="300" height="340" viewBox="0 0 300 340">
+      <rect x="10" y="150" width="200" height="14" rx="4" fill="#7a5a3c"/>
+      <path d="M40 150 L60 95 L170 95 L180 150 Z" fill="#3b4048"/>
+      <path d="M50 146 L66 102 L163 102 L172 146 Z" fill="#c9d7e6"/>
+      <path d="M200 340 C200 250 215 200 255 195 C290 200 300 250 300 340 Z" fill="#6f8f6a"/>
+      <circle cx="255" cy="160" r="38" fill="#c9a37e"/>
+      <path d="M218 155 C222 110 290 110 292 155 C280 140 230 140 218 155 Z" fill="#3a2a1e"/>
+    </svg>
+  </div>
+  <div class="notes">
+    <div class="note"><span class="n">1</span><div><b>大屏幕 / 投影</b>显示照着老人讲述生成的“老家”全景，自动缓慢环顾</div></div>
+    <div class="note"><span class="n">2</span><div><b>一支麦克风</b>放在老人面前；老人不碰任何设备，只需要说话</div></div>
+    <div class="note"><span class="n">3</span><div><b>两只音箱（或耳机）</b>馄饨梆子、自行车铃从画面中对应的方向传来</div></div>
+    <div class="note"><span class="n">4</span><div><b>工作人员的笔记本电脑</b>运行整个系统，必要时按 S 键查看识别文字、调音量、结束会谈</div></div>
+  </div>
+  <div class="pin" style="left:760px;top:180px">1</div>
+  <div class="pin" style="left:990px;top:780px">2</div>
+  <div class="pin" style="left:310px;top:540px">3</div>
+  <div class="pin" style="left:1230px;top:810px">4</div>
+  <div class="foot">示意图 · 画面截取自系统用通义万相实际生成的“上海弄堂 · 家门口”全景</div>
+</section>
+
+<!-- 2 老人看到的画面 -->
+<section class="frame" id="f2">
+  <div class="title">会谈画面<small>老人看到的：没有任何按钮和菜单，只有场景和温和的故事标记</small></div>
+  <div class="brand">听见从前</div>
+  <div class="screen" style="left:40px;top:120px;width:1440px;height:810px">
+    <div class="pano"></div>
+    <div class="shadow" style="left:150px;top:745px;width:330px;height:46px"></div>
+    <div class="obj" style="left:120px;top:440px;width:390px;height:350px"></div>
+    <div class="glow" style="left:290px;top:400px"></div>
+    <div class="glow" style="left:1020px;top:300px;width:34px;height:34px"></div>
+    <div class="vignette"></div><div class="grain"></div>
+  </div>
+  <div class="pin" style="left:20px;top:110px">1</div>
+  <div class="pin" style="left:120px;top:560px">2</div>
+  <div class="pin" style="left:380px;top:500px">3</div>
+  <div class="pin" style="left:1100px;top:440px">4</div>
+  <div class="notes">
+    <div class="note"><span class="n">1</span><div><b>360° 全景</b>按讲述生成：石库门、梧桐树、晾衣竹竿。站在人眼高度，自动缓慢环顾，转速有上限、不晃动</div></div>
+    <div class="note"><span class="n">2</span><div><b>可修改的物件</b>是独立的一层：卖馄饨的担子会“笃笃”敲梆子，声音从左前方传来，被房子挡住时声音变闷</div></div>
+    <div class="note"><span class="n">3</span><div><b>故事标记</b>老人讲的“阿福伯”的故事挂在馄饨担子上，是一个温和的小光点</div></div>
+    <div class="note"><span class="n">4</span><div><b>地点上的故事</b>挂在“家门口”这个地点上</div></div>
+  </div>
+  <div class="foot">1440×810 屏幕示意 · 全景与物件均为通义万相实际生成，物件经本地抠图</div>
+</section>
+
+<!-- 3 工作人员面板 -->
+<section class="frame" id="f3">
+  <div class="title">工作人员面板<small>按 S 键呼出，老人面前平时不显示</small></div>
+  <div class="brand">听见从前</div>
+  <div class="screen" style="left:40px;top:120px;width:1440px;height:810px">
+    <div class="pano"></div>
+    <div class="shadow" style="left:150px;top:745px;width:330px;height:46px"></div>
+    <div class="obj hl" style="left:250px;top:470px;width:340px;height:310px"></div>
+    <div class="glow" style="left:400px;top:430px"></div>
+    <div class="vignette"></div>
+    <div class="staff">
+      <h3>工作人员面板 <span class="muted">（按 S 键关闭）</span></h3>
+      <div class="muted">条件：personal｜阶段：exploring｜已进行 12 分 40 秒｜服务：云端</div>
+      <div class="muted">麦克风 -28 dB / 噪声底 -52 dB</div>
+      <div class="level"><i></i></div>
+      <div class="row"><span class="input">演示/测试：输入老人说的话</span><span class="btn">发送</span></div>
+      <div class="row"><span class="btn">安静</span><span class="btn">恢复声音</span><span class="btn">结束会谈</span></div>
+      <div class="row muted">音量上限 ▬▬▬▬▬●▬▬　☑ 自动环顾　外放（等功率声像）</div>
+      <div class="log">
+        <div class="c">10:42:18 陪聊：好，您看，卖馄饨的挪到巷口那头了。</div>
+        <div class="s">10:42:16 （执行）move_object 馄饨担子 → 巷口 · 更远</div>
+        <div class="e">10:42:12 老人：对，就在巷口那头。</div>
+        <div class="c">10:42:05 陪聊：是说卖馄饨的应该在更远的巷口吗？</div>
+        <div class="s">10:42:03 （待确认）把握 0.62</div>
+        <div class="e">10:41:56 老人：卖馄饨的不在这儿，在那头。</div>
+        <div class="c">10:41:30 陪聊：嗯，后来呢？</div>
+        <div class="e">10:41:02 老人：那个卖馄饨的老头腿脚不好，我们都叫他阿福伯，每天晚上都来，馄饨特别香。</div>
+        <div class="s">10:41:08 （故事）“阿福伯的馄饨” → 挂在馄饨担子上</div>
+        <div class="c">10:40:21 陪聊：那时候家门口，经常有谁经过？</div>
+      </div>
+    </div>
+  </div>
+  <div class="notes">
+    <div class="note"><span class="n">1</span><div><b>实时识别文字</b>老人的话（黄）、陪聊的话（蓝）</div></div>
+    <div class="note"><span class="n">2</span><div><b>没把握时先确认</b>系统用一句话问老人，老人说“对”再改；说“不对”就撤销</div></div>
+    <div class="note"><span class="n">3</span><div><b>改动的物件轻轻发光</b>几秒，提示老人“改好了”</div></div>
+    <div class="note"><span class="n">4</span><div><b>随时可以安静</b>老人说“太吵了”，0.4 秒内所有声音淡出</div></div>
+  </div>
+  <div class="pin" style="left:1006px;top:580px">1</div>
+  <div class="pin" style="left:1006px;top:470px">2</div>
+  <div class="pin" style="left:270px;top:490px">3</div>
+  <div class="pin" style="left:1006px;top:308px">4</div>
+</section>
+
+<!-- 4 第一次会谈：边聊边画 -->
+<section class="frame" id="f4">
+  <div class="title">第一次会谈：边聊边画<small>场景根据老人的讲述一步步出现</small></div>
+  <div class="brand">听见从前</div>
+  <div class="screen" style="left:40px;top:250px;width:590px;height:332px;background:#ede1cc">
+    <div class="vignette" style="opacity:.6"></div>
+  </div>
+  <div class="tag" style="left:40px;top:210px">① 开始：一张“白纸”</div>
+  <div class="screen" style="left:665px;top:250px;width:590px;height:332px;background:#ede1cc">
+    <div class="pano" style="opacity:.45"></div><div class="vignette" style="opacity:.6"></div>
+  </div>
+  <div class="tag" style="left:665px;top:210px">② 30–60 秒后：全景淡入</div>
+  <div class="screen" style="left:1290px;top:250px;width:590px;height:332px">
+    <div class="pano"></div>
+    <div class="shadow" style="left:62px;top:305px;width:140px;height:20px"></div>
+    <div class="obj hl" style="left:50px;top:180px;width:160px;height:145px"></div>
+    <div class="vignette"></div>
+  </div>
+  <div class="tag" style="left:1290px;top:210px">③ 讲到什么，就加什么</div>
+  <div class="bubble comp" style="left:40px;top:620px"><span class="who">陪聊者（语音）</span>您好呀，今天想听您讲讲小时候住的地方。您小时候住在哪儿呀？</div>
+  <div class="bubble elder" style="left:40px;top:780px"><span class="who">老人</span>上海，弄堂里，石库门房子。门口有棵大梧桐树。</div>
+  <div class="bubble comp" style="left:665px;top:620px"><span class="who">陪聊者</span>早上醒来，最先听到的是什么声音？</div>
+  <div class="bubble elder" style="left:665px;top:780px"><span class="who">老人</span>卖馄饨的敲梆子，笃笃笃，一条弄堂都听得见。</div>
+  <div class="bubble comp" style="left:1290px;top:620px"><span class="who">陪聊者</span>您看，这是照着您说的样子画的。您看看、听听，哪里不像，就跟我说。</div>
+  <div class="bubble" style="left:1290px;top:800px;background:#f3ead9;font-size:18px"><span class="who">系统在后台</span>抽取：上海弄堂 · 1960 年代 · 梧桐树 → 生成全景；“卖馄饨的”→ 馄饨担子 + 木梆子声</div>
+  <div class="arrow" style="left:628px;top:370px">›</div><div class="arrow" style="left:1253px;top:370px">›</div>
+  <div class="foot">真实界面上没有字幕；气泡只是为了说明对话内容</div>
+</section>
+
+<!-- 5 时间与天气 -->
+<section class="frame" id="f5">
+  <div class="title">“那天在下雨”<small>时间、天气、季节随老人的话改变（轻量变化用调色和粒子实现）</small></div>
+  <div class="brand">听见从前</div>
+  <div class="screen" style="left:40px;top:220px;width:590px;height:332px">
+    <div class="pano"></div><div class="obj" style="left:50px;top:180px;width:160px;height:145px"></div><div class="vignette"></div>
+    <div class="wlabel" style="color:var(--ink)">上午 · 晴</div>
+  </div>
+  <div class="screen dusk" style="left:665px;top:220px;width:590px;height:332px">
+    <div class="pano"></div><div class="obj" style="left:50px;top:180px;width:160px;height:145px;filter:brightness(.7) sepia(.4)"></div>
+    <div class="tint"></div><div class="fog"></div><div class="rain"></div><div class="vignette"></div>
+    <div class="wlabel" style="color:var(--ink)">傍晚 · 小雨</div>
+  </div>
+  <div class="screen snow" style="left:1290px;top:220px;width:590px;height:332px">
+    <div class="pano"></div><div class="obj" style="left:50px;top:180px;width:160px;height:145px;filter:saturate(.6) brightness(1.05)"></div>
+    <div class="snowcap"></div><div class="flakes"></div><div class="vignette"></div>
+    <div class="wlabel" style="color:var(--ink)">冬天 · 下雪</div>
+  </div>
+  <div class="bubble elder" style="left:665px;top:660px"><span class="who">老人</span>那天傍晚在下雨，屋檐一直滴水。</div>
+  <div class="bubble comp" style="left:665px;top:790px"><span class="who">陪聊者</span>好，您看，下起雨来了。</div>
+  <div class="bubble elder" style="left:1290px;top:660px"><span class="who">老人</span>冬天下雪，房顶都白了。</div>
+  <div class="bubble" style="left:1290px;top:790px;background:#f3ead9;font-size:18px"><span class="who">系统</span>画面差别大：先用调色和雪花，同时在后台重新画这张全景，画好后平滑淡入</div>
+  <div class="bubble" style="left:40px;top:660px;background:#f3ead9;font-size:18px;max-width:560px"><span class="who">声音同步变化</span>晴天上午：鸟叫、远处人声、蝉鸣<br>下雨：雨打瓦片，蝉鸣停下<br>冬天：北风</div>
+  <div class="foot">示意图：调色效果为近似模拟</div>
+</section>
+
+<!-- 6 设置页 -->
+<section class="frame" id="f6">
+  <div class="title">设置页<small>会谈前后由工作人员使用</small></div>
+  <div class="brand">听见从前</div>
+  <div class="browser setup">
+    <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">127.0.0.1:8000/setup.html</span></div>
+    <header><h1>听见从前 · 设置</h1><a>跨条件对比报告</a><a>声学调参试听</a><a>素材审核</a></header>
+    <main>
+      <div class="svc"><b>云端服务已连接</b>：大语言模型 qwen3.7-plus；全景 wanx；深度 local_onnx。　声音素材 46 个（31 组）。</div>
+      <div class="card"><h2>新建参与者</h2><span style="color:#7a6650;font-size:14px">只填编号（如 P001），不要填真名。</span><br><br>
+        <span class="ctrl" style="width:200px;color:#aaa">编号，如 P004</span><span class="ctrl">上海弄堂 ▾</span><span class="ctrl" style="width:300px;color:#aaa">备注（可选）</span><span class="ctrl b">新建</span></div>
+      <div class="card"><h2>参与者</h2>
+        <div style="padding:6px 0;border-bottom:1px solid #eadcc6">
+          <b style="font-size:19px;margin-right:16px">P001</b><span class="ctrl">上海弄堂 ▾</span>
+          <span style="font-size:15px"><span class="chk"></span>已获得本人和家属的知情同意（含录音和使用云端服务）</span><br><br>
+          <span class="ctrl">个人共建场景 ▾</span> 时长 <span class="ctrl">30</span> 分钟
+          <span class="ctrl go">开始会谈</span><span class="ctrl b">导出“老家漫游”</span><span class="ctrl b">导出全部数据</span><span class="ctrl d">删除全部数据</span>
+          <table><tr><th>会谈</th><th>条件</th><th>开始</th><th>状态</th><th></th></tr>
+            <tr><td>ses_3f2a91c0</td><td>个人共建场景</td><td>2026/11/03 14:02</td><td>已结束</td><td><a>报告</a><a>CSV</a><a>重新分析</a></td></tr>
+            <tr><td>ses_8b71d244</td><td>通用场景</td><td>2026/11/10 14:05</td><td>已结束</td><td><a>报告</a><a>CSV</a><a>重新分析</a></td></tr>
+            <tr><td>ses_c0d9e512</td><td>只听</td><td>2026/11/17 14:01</td><td>已结束</td><td><a>报告</a><a>CSV</a><a>重新分析</a></td></tr>
+          </table>
+        </div>
+        <div style="padding:10px 0">
+          <b style="font-size:19px;margin-right:16px">P002</b><span class="ctrl">北方村庄 ▾</span>
+          <span style="font-size:15px"><span class="chk"></span>已获得本人和家属的知情同意（含录音和使用云端服务）</span><br><br>
+          <span class="ctrl">通用场景 ▾</span> 时长 <span class="ctrl">30</span> 分钟
+          <span class="ctrl go">开始会谈</span><span class="ctrl b">导出“老家漫游”</span><span class="ctrl b">导出全部数据</span><span class="ctrl d">删除全部数据</span>
+        </div>
+      </div>
+    </main>
+  </div>
+  <div class="notes">
+    <div class="note"><span class="n">1</span><div><b>只用编号</b>系统拒绝用中文姓名作编号</div></div>
+    <div class="note"><span class="n">2</span><div><b>知情同意</b>没勾选就不能开始会谈</div></div>
+    <div class="note"><span class="n">3</span><div><b>三种实验条件</b>只听 / 通用场景 / 个人共建场景</div></div>
+    <div class="note"><span class="n">4</span><div><b>自动生成报告</b>每场会谈结束后统计讲述时长、主动开口次数、细节数</div></div>
+    <div class="note"><span class="n">5</span><div><b>导出或永久删除</b>一位参与者的全部数据</div></div>
+  </div>
+  <div class="pin" style="left:40px;top:378px">1</div>
+  <div class="pin" style="left:660px;top:487px">2</div>
+  <div class="pin" style="left:40px;top:540px">3</div>
+  <div class="pin" style="left:1210px;top:610px">4</div>
+  <div class="pin" style="left:825px;top:540px">5</div>
+</section>
+
+<!-- 7 老家漫游 -->
+<section class="frame" id="f7">
+  <div class="title">“老家漫游”<small>送给家属的离线网页：手机上直接打开</small></div>
+  <div class="brand">听见从前</div>
+  <div class="phone" style="left:120px;top:150px"><div class="in">
+    <div class="pano"></div>
+    <div class="enter"><div class="t">老家漫游</div><div class="sub">上海弄堂 · 1960年代</div><div class="go">点一下，进去看看</div>
+      <div class="tip">戴上耳机效果更好 · 用手指拖动可以转头看<br>点亮着的小光点，可以听当时讲的故事</div></div>
+    <div class="notch"></div></div></div>
+  <div class="phone" style="left:620px;top:150px"><div class="in">
+    <div class="pano"></div>
+    <div class="shadow" style="left:6px;top:600px;width:200px;height:28px"></div>
+    <div class="obj" style="left:0;top:430px;width:220px;height:200px"></div>
+    <div class="glow" style="left:88px;top:395px;width:36px;height:36px"></div>
+    <div class="label" style="left:106px;top:358px">阿福伯的馄饨</div>
+    <div class="glow" style="left:300px;top:300px;width:30px;height:30px"></div>
+    <div class="label" style="left:315px;top:266px">夏夜乘凉</div>
+    <div class="vignette"></div>
+    <div class="credits">素材来源</div>
+    <div class="places"><span class="on">家门口</span><span>弄堂口</span><span>井边</span></div>
+    <div class="notch"></div></div></div>
+  <div class="phone" style="left:1120px;top:150px"><div class="in">
+    <div class="pano" style="filter:brightness(.85)"></div>
+    <div class="obj" style="left:0;top:430px;width:220px;height:200px;filter:brightness(.85)"></div>
+    <div class="glow" style="left:88px;top:395px;width:36px;height:36px"></div>
+    <div class="vignette"></div>
+    <div class="storycard"><h4>阿福伯的馄饨</h4>
+      <p>那个卖馄饨的老头腿脚不好，我们都叫他阿福伯。每天晚上都来，在巷口敲梆子，笃笃笃的，馄饨特别香……</p>
+      <div class="audio">▶ <span>0:14</span><span class="pbar"><i></i></span><span>0:37</span></div>
+      <div style="font-size:12.5px;color:#8a7358;margin-top:8px">老人自己的讲述录音</div></div>
+    <div class="places"><span class="on">家门口</span><span>弄堂口</span><span>井边</span></div>
+    <div class="notch"></div></div></div>
+  <div style="position:absolute;left:120px;top:1010px;width:400px;text-align:center;font-size:21px">打开</div>
+  <div style="position:absolute;left:620px;top:1010px;width:400px;text-align:center;font-size:21px">拖动环顾、听空间声音、切换地点</div>
+  <div style="position:absolute;left:1120px;top:1010px;width:400px;text-align:center;font-size:21px">点光点：听老人自己讲的故事</div>
+  <div class="notes" style="top:200px;width:300px">
+    <div class="note"><div>一个 HTML 文件，<b>不用联网、不用装 App</b>发到微信里就能打开</div></div>
+    <div class="note"><div><b>只放勾选过的故事</b>在设置页里选择哪些故事放进去</div></div>
+    <div class="note"><div><b>有版权的音乐不导出</b>老歌、戏曲录音只在会谈现场播放</div></div>
+  </div>
+</section>
+
+<script>
+  const id = location.hash.slice(1) || "f1";
+  document.getElementById(id).classList.add("on");
+</script>
+</body>
+</html>
