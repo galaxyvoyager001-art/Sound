@@ -166,6 +166,16 @@ class SessionRuntime:
     async def start(self) -> None:
         if self.st.phase != "waiting":
             return
+        self.st.phase = "starting"  # 防止断线重连时重复开始
+        try:
+            await self._start()
+        except Exception as e:
+            log.exception("会谈启动出错")
+            self.log("start_error", {"error": str(e)[:300]})
+            if self.st.phase == "starting":
+                self.st.phase = "exploring"
+
+    async def _start(self) -> None:
         self.started_mono = self.now()
         self.st.last_elder_activity = self.now()
         self.db.execute("UPDATE sessions SET started_at=?, status='running' WHERE id=?", (time.time(), self.session_id))
@@ -173,13 +183,13 @@ class SessionRuntime:
                                    "providers": self.ctx.providers.describe(), "scene_version": self.scene().version})
         m = self.scene()
         self.st.current_vp = m.entry_viewpoint
-        if self.condition in ("generic", "audio_only") and not m.viewpoints:
-            m = await self.ctx.scenes.build_generic(self.scene_id, self.session_id)
-            self.st.current_vp = m.entry_viewpoint
-            await self.push_scene(m)
+        need_generic = self.condition in ("generic", "audio_only") and not m.viewpoints
         self.st.phase = "gathering" if (self.condition == "personal" and not m.viewpoints) else "exploring"
         if self.st.phase == "exploring":
             self.st.scene_ready_announced = True
+        if need_generic:
+            # 通用场景在后台搭建（生成全景和物件需要时间），陪聊者先问好，不让老人等
+            self.spawn(self._build_generic())
         try:
             self.asr = self.ctx.providers.asr_factory()
             await self.asr.start(self.on_asr)
@@ -190,6 +200,15 @@ class SessionRuntime:
         await self.staff_status()
         greet_phase = "greeting" if self.st.phase == "gathering" else "exploring"
         await self.companion_say(greet_phase, opening=True)
+
+    async def _build_generic(self) -> None:
+        try:
+            m = await self.ctx.scenes.build_generic(self.scene_id, self.session_id)
+            self.st.current_vp = m.entry_viewpoint
+            await self.push_scene(m)
+        except Exception as e:
+            log.exception("通用场景搭建失败")
+            self.log("generic_build_error", {"error": str(e)[:300]})
 
     # ================= 输入 =================
     async def on_audio(self, data: bytes) -> None:
@@ -217,7 +236,8 @@ class SessionRuntime:
                 await self.on_audio(b"\x00" * gap)
             if msg.get("viewpoint_id"):
                 self.st.current_vp = msg["viewpoint_id"]
-            await self.start()
+            # 不在接收消息的循环里等待：开始流程放到后台，麦克风数据和心跳照常处理
+            self.spawn(self.start())
         elif typ == "vad":
             self.st.elder_speaking = bool(msg.get("speaking"))
             self.st.vad_since = self.now()

@@ -223,13 +223,19 @@ async def ws_session(ws: WebSocket, sid: str):
             if msg.get("type") == "websocket.disconnect":
                 break
             if msg.get("bytes"):
-                await rt.on_audio(msg["bytes"])
+                try:
+                    await rt.on_audio(msg["bytes"])
+                except Exception:
+                    log.exception("处理音频出错")
             elif msg.get("text"):
                 try:
                     data = json.loads(msg["text"])
                 except ValueError:
                     continue
-                await rt.on_json(data)
+                try:
+                    await rt.on_json(data)
+                except Exception:
+                    log.exception("处理消息出错：%s", data.get("type"))  # 单条消息出错不断开连接
     except WebSocketDisconnect:
         pass
     except Exception:

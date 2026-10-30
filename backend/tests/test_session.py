@@ -77,6 +77,7 @@ async def test_personal_session_flow(app_ctx):
     ws = FakeWS()
     await rt.attach(ws)
     await rt.on_json({"type": "hello", "t": 0})
+    assert await wait_for(lambda: bool(ws.of("say")), 10), "应当有问候"
     await rt.on_audio(b"\x00" * 32000 * 3)  # 3 秒“录音”
     await ack_speech(rt, ws)
     assert ws.of("say"), "应当有问候"
@@ -154,8 +155,11 @@ async def test_generic_session_disables_edits(app_ctx):
     ws = FakeWS()
     await rt.attach(ws)
     await rt.on_json({"type": "hello", "t": 0})
+    # 问候不必等通用场景搭完
+    assert await wait_for(lambda: bool(ws.of("say")), 10), "应当先问好"
+    assert await wait_for(lambda: bool(rt.scene().viewpoints and rt.scene().objects), 20), "通用场景应按地域模板搭好"
+    await wait_for(lambda: not rt.tasks, 20)
     m = rt.scene()
-    assert m.viewpoints and m.objects, "通用场景应按地域模板搭好"
     n_obj = len(m.objects)
     await say(rt, ws, "我们家门口没有鸡笼，有个收音机放越剧")
     await wait_for(lambda: not rt.lock.locked(), 10)
