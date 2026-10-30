@@ -12,6 +12,7 @@
 
 ## 目录
 
+1. [在自己电脑（WSL）上安装：一键脚本](#在自己电脑wsl上安装一键脚本)
 1. [快速开始（演示模式，无需任何 Key）](#快速开始演示模式无需任何-key)
 2. [需要哪些 API Key](#需要哪些-api-key)
 3. [配置](#配置)
@@ -24,6 +25,26 @@
 10. [项目结构](#项目结构)
 11. [测试](#测试)
 12. [已知限制与后续工作](#已知限制与后续工作)
+
+---
+
+## 在自己电脑（WSL）上安装：一键脚本
+
+```bash
+git clone -b claude/jolly-edison-koviwc https://github.com/galaxyvoyager001-art/Sound.git
+```
+
+```bash
+cd Sound && bash scripts/install_wsl.sh
+```
+
+脚本会安装 ffmpeg、Node.js、Python 依赖，下载深度模型，构建界面，最后提示粘贴 API Key（生成只在本机的 `.env`）。以后每次启动：
+
+```bash
+bash scripts/start.sh
+```
+
+然后在 Windows 的 Chrome / Edge 里打开 <http://127.0.0.1:8000/setup.html>。更新代码用 `git pull`，如果更新涉及界面，再运行一次 `cd frontend && npm run build`。
 
 ---
 
