@@ -86,7 +86,7 @@ if (!data) {
 
   $("credits-body").innerHTML = "<h3>素材来源与授权</h3>" + data.credits.map((c) =>
     `<p><b>${c.name}</b>：${c.source}，${c.license}${c.attribution ? "，" + c.attribution : ""}</p>`).join("") +
-    "<p>画面为 AI 生成的风格化插画，不代表真实的人物和地点。</p>";
+    "<p>画面由 AI 根据讲述生成，不是真实拍摄的照片，不代表真实的人物和地点。</p>";
   $("credits-btn").addEventListener("click", () => $("credits").classList.add("open"));
   $("credits-close").addEventListener("click", () => $("credits").classList.remove("open"));
 }

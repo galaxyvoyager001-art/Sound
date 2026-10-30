@@ -1,20 +1,35 @@
-# 统一视觉风格：全景图和物件插画都从这里组装提示词。
-# 原则：温暖的老连环画 / 水彩 / 褪色老照片插画风，不要照片级写实；
-# 场景只表现 1950–1980 年代中国的普通生活面貌。
+# 统一视觉风格：全景图和物件图都从这里组装提示词。
+# 风格预设由 .env 的 STYLE_PRESET 选择：realistic（默认，真实摄影风格）或 illustration（水彩/老连环画插画）。
+# 场景只表现 1950–1980 年代中国的普通生活面貌。切换预设后，物件图会按新风格重新生成（旧的缓存保留）。
 
-style:
-  base_zh: >-
-    温暖的手绘水彩插画，老连环画与褪色老照片的质感，柔和的笔触和纸张纹理，
-    低饱和度的暖色调（米黄、赭石、青灰、砖红），光线柔和，画面安静祥和，
-    1950至1980年代中国普通人的生活场景
-  base_en: >-
-    warm hand-painted watercolor illustration, vintage Chinese lianhuanhua comic and faded old photograph feel,
-    soft brushwork, paper texture, muted warm palette, gentle light, peaceful everyday life in 1950s-1980s China
-  negative: >-
-    照片级写实, 3D 渲染, 高对比度, 霓虹, 现代建筑, 高楼, 汽车, 手机, 电线杆上的广告, 塑料, 英文字母, 文字, 水印,
-    清晰的人脸, 人物特写, 恐怖, 废墟, 战争, 标语, 口号, 横幅
-  people_policy_zh: >-
-    画面中的人物只能是风格化的通用形象：远景或背影，面部简化不画五官细节，不像任何真实人物
+presets:
+  realistic:
+    base_zh: >-
+      真实的纪实摄影照片，1960至1980年代中国，自然光，真实的材质和光影，
+      带一点老胶片的颗粒感和略微褪色的暖色调，画面安静祥和，普通人的日常生活场景
+    base_en: >-
+      realistic documentary photograph, 1960s-1980s China, natural daylight, real materials,
+      subtle film grain, slightly faded warm colors, peaceful everyday life
+    negative: >-
+      插画, 卡通, 动漫, 水彩, 油画, 3D 渲染感, CG, 过度锐化, 高饱和度, 霓虹, 现代建筑, 高楼, 汽车, 手机,
+      广告牌, 塑料, 英文字母, 文字, 水印, 清晰的人脸, 人物特写, 恐怖, 废墟, 战争, 标语, 口号, 横幅
+    people_policy_zh: >-
+      画面中的人物只能是远景、背影或侧影，看不清面部，不像任何真实人物
+    object_prefix_zh: "单个物件的真实产品摄影照片，完整显示、居中，纯白色背景，柔和均匀的影棚光，没有地面和投影，没有其他物体，"
+  illustration:
+    base_zh: >-
+      温暖的手绘水彩插画，老连环画与褪色老照片的质感，柔和的笔触和纸张纹理，
+      低饱和度的暖色调（米黄、赭石、青灰、砖红），光线柔和，画面安静祥和，
+      1950至1980年代中国普通人的生活场景
+    base_en: >-
+      warm hand-painted watercolor illustration, vintage Chinese lianhuanhua comic and faded old photograph feel,
+      soft brushwork, paper texture, muted warm palette, gentle light, peaceful everyday life in 1950s-1980s China
+    negative: >-
+      照片级写实, 3D 渲染, 高对比度, 霓虹, 现代建筑, 高楼, 汽车, 手机, 电线杆上的广告, 塑料, 英文字母, 文字, 水印,
+      清晰的人脸, 人物特写, 恐怖, 废墟, 战争, 标语, 口号, 横幅
+    people_policy_zh: >-
+      画面中的人物只能是风格化的通用形象：远景或背影，面部简化不画五官细节，不像任何真实人物
+    object_prefix_zh: "单个物件的插画，完整显示、居中，纯白色背景，没有地面和投影，没有其他物体，"
 
 panorama:
   prefix_zh: >-
@@ -26,7 +41,7 @@ panorama:
   negative_extra: "鱼眼畸变, 弯曲的地平线, 画框, 分格, 拼贴, 人物, 小贩, 动物"
 
 object:
-  prefix_zh: "单个物件的插画，完整显示、居中，纯白色背景，没有地面和投影，没有其他物体，"
+  # prefix_zh 由预设的 object_prefix_zh 决定
   suffix_zh: "侧前方视角，轮廓清晰"
   negative_extra: "背景场景, 地面, 阴影, 多个物体, 裁切, 边框"
   person_suffix_zh: "人物为远景背影或侧影，面部不画细节"

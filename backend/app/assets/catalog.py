@@ -67,6 +67,13 @@ class Catalog:
 def load_catalog(config_dir: Path = ROOT / "config") -> Catalog:
     data = yaml.safe_load((config_dir / "catalog.yaml").read_text(encoding="utf-8"))
     style = yaml.safe_load((config_dir / "style.yaml").read_text(encoding="utf-8"))
+    import os
+    preset_name = os.environ.get("STYLE_PRESET", "").strip() or "realistic"
+    presets = style.get("presets", {})
+    preset = presets.get(preset_name) or presets.get("realistic") or {}
+    style["preset"] = preset_name if preset_name in presets else "realistic"
+    style["style"] = {k: v for k, v in preset.items() if k != "object_prefix_zh"}
+    style.setdefault("object", {})["prefix_zh"] = preset.get("object_prefix_zh", "")
     objects = [ObjectEntry(type=o["type"], synonyms=o.get("synonyms") or [], height_m=o.get("height_m", 1.2),
                            elevation_m=o.get("elevation_m", 0.0), sound=o.get("sound"), person=o.get("person", False),
                            prompt=o.get("prompt", "")) for o in data["objects"]]

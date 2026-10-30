@@ -21,7 +21,8 @@ def direction_word(yaw: float) -> str:
 
 def style_key(catalog: Catalog) -> str:
     s = catalog.style["style"]
-    return hashlib.sha1((s["base_zh"] + s["negative"] + catalog.style["object"]["prefix_zh"]).encode()).hexdigest()[:10]
+    key = catalog.style.get("preset", "") + s["base_zh"] + s["negative"] + catalog.style["object"]["prefix_zh"]
+    return hashlib.sha1(key.encode()).hexdigest()[:10]
 
 
 def panorama_prompt(catalog: Catalog, m: SceneManifest, vp: Viewpoint, restyle: bool = False) -> tuple[str, str]:
@@ -49,7 +50,7 @@ def panorama_prompt(catalog: Catalog, m: SceneManifest, vp: Viewpoint, restyle: 
 def object_prompt(catalog: Catalog, object_type: str, entry: Optional[ObjectEntry], region: str, era: str) -> tuple[str, str]:
     st = catalog.style
     desc = entry.prompt if entry and entry.prompt else object_type
-    parts = [st["object"]["prefix_zh"], f"{desc}，", f"{st['eras'].get(era, '')}，" if era else "",
+    parts = [st["object"]["prefix_zh"], f"{desc}，", f"{st['eras'].get(era, '')}，" if (era and entry and entry.person) else f"{era}的样式，" if era else "",
              st["style"]["base_zh"] + "，", st["object"]["suffix_zh"]]
     if entry and entry.person:
         parts.append("，" + st["object"]["person_suffix_zh"] + "，" + st["style"]["people_policy_zh"])

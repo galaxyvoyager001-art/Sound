@@ -39,6 +39,10 @@ export class MicCapture {
   systemSpeaking = false; // 陪聊者正在说话
   onFrame?: (pcm: ArrayBuffer) => void;
   onVad?: (e: VadEvent) => void;
+  /** 省钱用的门控：比 VAD 更灵敏（轻声也算），关上前多等 2 秒；只有门开着时才需要把音频送去云端识别 */
+  onGate?: (open: boolean) => void;
+  private gateOpen = false;
+  private gateBelow = 0;
   onLevel?: (db: number, floorDb: number) => void;
 
   async start(): Promise<void> {
@@ -69,6 +73,13 @@ export class MicCapture {
       const rate = db < this.noiseFloorDb ? 0.2 : this.speaking ? 0.03 : 0.01;
       this.noiseFloorDb += (db - this.noiseFloorDb) * rate;
       this.noiseFloorDb = Math.max(-75, Math.min(-20, this.noiseFloorDb));
+    }
+    if (db > this.noiseFloorDb + 5 && db > -60) {
+      this.gateBelow = 0;
+      if (!this.gateOpen) { this.gateOpen = true; this.onGate?.(true); }
+    } else if (this.gateOpen && ++this.gateBelow >= 20) {
+      this.gateOpen = false;
+      this.onGate?.(false);
     }
     const margin = this.systemSpeaking ? 18 : 9;
     const isVoice = db > this.noiseFloorDb + margin && db > -52;

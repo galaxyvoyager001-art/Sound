@@ -38,6 +38,7 @@ class Settings:
     llm_fast_model: str = field(default_factory=lambda: _env("LLM_FAST_MODEL", "qwen3.8-flash"))
     embedding_model: str = field(default_factory=lambda: _env("EMBEDDING_MODEL", "qwen3.7-text-embedding-flash"))
     asr_model: str = field(default_factory=lambda: _env("ASR_MODEL", "fun-asr-realtime"))
+    asr_gating: bool = field(default_factory=lambda: _env_bool("ASR_GATING", True))
     asr_vocabulary_id: str = field(default_factory=lambda: _env("ASR_VOCABULARY_ID"))
     tts_model: str = field(default_factory=lambda: _env("TTS_MODEL", "cosyvoice-v3-flash"))
     tts_voice: str = field(default_factory=lambda: _env("TTS_VOICE", "longanrou_v3"))

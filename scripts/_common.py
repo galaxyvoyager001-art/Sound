@@ -13,4 +13,4 @@ def registry():
     from app.assets.registry import AssetRegistry
     from app.config import get_settings
     s = get_settings()
-    return AssetRegistry(ROOT, ROOT / "assets" / "manifest.json", s.data_dir / "generated_manifest.json")
+    return AssetRegistry(ROOT, s.assets_dir / "manifest.json", s.data_dir / "generated_manifest.json")

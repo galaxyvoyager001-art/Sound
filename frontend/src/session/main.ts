@@ -157,6 +157,7 @@ function connect(attempt = 0) {
 mic.onFrame = (pcm) => {
   if (ws?.readyState === WebSocket.OPEN) ws.send(pcm);
 };
+mic.onGate = (open) => send({ type: "gate", open, t: mic.timeS });
 mic.onVad = (e) => {
   send({ type: "vad", speaking: e.speaking, t: e.t });
   if (e.speaking && mic.systemSpeaking) {

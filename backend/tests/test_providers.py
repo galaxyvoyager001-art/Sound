@@ -162,3 +162,54 @@ async def test_tts_protocol(tmp_path):
     # 第二次走缓存，不再连接
     assert await tts.synthesize("您好") == audio and seen.count("run-task") == 1
     server.close()
+
+
+async def test_asr_gating_saves_audio_and_keeps_timestamps():
+    """安静时不送音频；开口时带上 1 秒预录；长时间安静结束任务，再开口重新开始，时间戳仍对齐会谈时间。"""
+    log = {"runs": 0, "finishes": 0, "bytes": []}
+
+    async def handler(ws):
+        n = 0
+        async for msg in ws:
+            if isinstance(msg, bytes):
+                n += len(msg)
+                continue
+            data = json.loads(msg)
+            if data["header"]["action"] == "run-task":
+                log["runs"] += 1
+                await ws.send(json.dumps({"header": {"event": "task-started"}}))
+            elif data["header"]["action"] == "finish-task":
+                log["finishes"] += 1
+                log["bytes"].append(n)
+                # 报告：任务里第 0.5 秒开始的一句话
+                await ws.send(json.dumps({"header": {"event": "result-generated"}, "payload": {"output": {"sentence": {
+                    "begin_time": 500, "end_time": 1500, "text": "嗯", "sentence_end": True}}}}))
+                await ws.send(json.dumps({"header": {"event": "task-finished"}}))
+
+    server, url = await _ws_server(handler)
+    results = []
+
+    async def cb(r):
+        results.append(r)
+
+    s = DashScopeASRSession("k", url, "fun-asr-realtime")
+    s.IDLE_CLOSE_S = 0.3
+    await s.start(cb)
+    chunk = b"\x00" * 3200  # 0.1 秒
+    for _ in range(5):        # 0.5 秒有声
+        await s.send(chunk)
+    await asyncio.sleep(0.05)
+    for _ in range(50):       # 5 秒安静：不送
+        await s.feed(chunk, False)
+        await asyncio.sleep(0.01)
+    await asyncio.sleep(0.3)
+    assert log["finishes"] == 1 and log["bytes"][0] == 5 * 3200   # 第一段只送了 0.5 秒
+    for _ in range(3):        # 再次开口（会谈第 5.5 秒）
+        await s.feed(chunk, True)
+    await asyncio.sleep(0.3)
+    assert log["runs"] == 2
+    await s.close()
+    server.close()
+    assert log["bytes"][1] == 10 * 3200 + 3 * 3200   # 1 秒预录 + 0.3 秒
+    # 第二个任务从会谈第 4.5 秒开始（5.5 − 1 秒预录），句子在任务第 0.5 秒 → 会谈第 5.0 秒
+    assert results[-1].start_s == pytest.approx(5.0)

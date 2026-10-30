@@ -56,6 +56,9 @@ class SessionState:
     turn: list[Sentence] = field(default_factory=list)
     elder_speaking: bool = False
     vad_since: float = 0.0
+    gate_seen: bool = False  # 前端是否发送“可能有人说话”的门控信号
+    gate_open: bool = False
+    gate_changed: float = 0.0
     last_asr_activity: float = 0.0
     last_elder_activity: float = 0.0
     companion_speaking: bool = False
@@ -194,9 +197,15 @@ class SessionRuntime:
         self.audio_bytes += len(data)
         if self.asr is not None and self.st.phase not in ("ended",):
             try:
-                await self.asr.send(data)
+                await self.asr.feed(data, self.asr_active())
             except Exception:
                 pass
+
+    def asr_active(self) -> bool:
+        """省钱：只在“可能有人说话”时把音频送去识别（门槛比 VAD 更低，关上后再多送 2 秒）。"""
+        if not self.s.asr_gating or not self.st.gate_seen:
+            return True
+        return self.st.gate_open or self.now() - self.st.gate_changed < 2.0
 
     async def on_json(self, msg: dict) -> None:
         typ = msg.get("type")
@@ -214,6 +223,10 @@ class SessionRuntime:
             self.st.vad_since = self.now()
             self.st.last_elder_activity = self.now()
             self.log("vad", {"speaking": self.st.elder_speaking, "t": msg.get("t")})
+        elif typ == "gate":
+            self.st.gate_seen = True
+            self.st.gate_open = bool(msg.get("open"))
+            self.st.gate_changed = self.now()
         elif typ == "barge_in":
             self.log("barge_in", {"t": msg.get("t")})
         elif typ == "tts_state":
