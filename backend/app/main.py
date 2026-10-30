@@ -159,7 +159,7 @@ def export_participant_data(pid: str):
 class SessionIn(BaseModel):
     participant_id: str
     condition: Condition = "personal"
-    duration_min: int = Field(30, ge=5, le=90)
+    duration_min: int = Field(30, ge=1, le=120)
 
 
 @app.post("/api/sessions")

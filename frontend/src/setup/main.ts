@@ -8,7 +8,12 @@ async function api(path: string, opts: RequestInit = {}) {
   const r = await fetch(path, { headers: { "Content-Type": "application/json" }, ...opts });
   if (!r.ok) {
     let msg = r.statusText;
-    try { msg = (await r.json()).detail ?? msg; } catch { /* */ }
+    try {
+      const d = (await r.json()).detail;
+      // FastAPI 的校验错误是一个列表：取出每条的说明
+      msg = Array.isArray(d) ? d.map((x: { loc?: string[]; msg?: string }) => `${(x.loc ?? []).slice(-1)[0] ?? ""}：${x.msg ?? ""}`).join("；")
+        : typeof d === "string" ? d : JSON.stringify(d ?? msg);
+    } catch { /* */ }
     throw new Error(msg);
   }
   return r.json();
@@ -52,7 +57,7 @@ async function loadParticipants() {
       </div>
       <div class="row">
         <select class="cond">${Object.entries(COND).map(([k, v]) => `<option value="${k}">${v}</option>`).join("")}</select>
-        <label>时长 <input class="dur" type="number" min="5" max="90" value="30" /> 分钟</label>
+        <label>时长 <input class="dur" type="number" min="1" max="120" value="30" /> 分钟</label>
         <button class="start" ${p.consent ? "" : "disabled title='请先勾选知情同意'"}>开始会谈</button>
         <button class="roam">导出“老家漫游”</button>
         <a class="btn" href="/api/participants/${encodeURIComponent(p.id)}/data.zip">导出全部数据</a>
